@@ -126,12 +126,14 @@ unsigned int ddr_compute_dimm_parameters(const unsigned int ctrl_num,
 {
 	unsigned int retval;
 	int i;
+#ifndef CONFIG_SYS_FSL_DDR_EMU
 	const u8 udimm_rc_e_dq[18] = {
 		0x0c, 0x2c, 0x15, 0x35, 0x15, 0x35, 0x0b, 0x2c, 0x15,
 		0x35, 0x0b, 0x35, 0x0b, 0x2c, 0x0b, 0x35, 0x15, 0x36
 	};
 	int spd_error = 0;
 	u8 *ptr;
+#endif
 
 	if (spd->mem_type) {
 		if (spd->mem_type != SPD_MEMTYPE_DDR4) {
@@ -186,6 +188,7 @@ unsigned int ddr_compute_dimm_parameters(const unsigned int ctrl_num,
 		/* Unbuffered DIMMs */
 		if (spd->mod_section.unbuffered.addr_mapping & 0x1)
 			pdimm->mirrored_dimm = 1;
+#ifndef CONFIG_SYS_FSL_DDR_EMU
 		if ((spd->mod_section.unbuffered.mod_height & 0xe0) == 0 &&
 		    (spd->mod_section.unbuffered.ref_raw_card == 0x04)) {
 			/* Fix SPD error found on DIMMs with raw card E0 */
@@ -202,6 +205,7 @@ unsigned int ddr_compute_dimm_parameters(const unsigned int ctrl_num,
 			if (spd_error)
 				puts("SPD DQ mapping error fixed\n");
 		}
+#endif
 		break;
 
 	default:
