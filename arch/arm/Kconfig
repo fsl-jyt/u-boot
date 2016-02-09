@@ -647,6 +647,16 @@ config TARGET_HIKEY
 	  Support for HiKey 96boards platform. It features a HI6220
 	  SoC, with 8xA53 CPU, mali450 gpu, and 1GB RAM.
 
+config TARGET_LS1088ARDB
+	bool "Support ls1088ardb"
+	select ARM64
+	select ARMV8_MULTIENTRY
+	help
+	  Support for Freescale LS1088ARDB platform.
+	  The LS1088AA Reference design board (RDB) is a high-performance
+	  development platform that supports the QorIQ LS1088A
+	  Layerscape Architecture processor.
+
 config TARGET_LS1021AQDS
 	bool "Support ls1021aqds"
 	select CPU_V7
@@ -788,6 +798,7 @@ source "board/denx/m53evk/Kconfig"
 source "board/freescale/ls2080a/Kconfig"
 source "board/freescale/ls2080aqds/Kconfig"
 source "board/freescale/ls2080ardb/Kconfig"
+source "board/freescale/ls1088a/Kconfig"
 source "board/freescale/ls1021aqds/Kconfig"
 source "board/freescale/ls1043aqds/Kconfig"
 source "board/freescale/ls1021atwr/Kconfig"

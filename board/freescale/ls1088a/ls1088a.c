@@ -1,0 +1,113 @@
+/*
+ * Copyright 2016 Freescale Semiconductor
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
+#include <common.h>
+#include <malloc.h>
+#include <errno.h>
+#include <netdev.h>
+#include <fsl_ifc.h>
+#include <fsl_ddr.h>
+#include <asm/io.h>
+#include <fdt_support.h>
+#include <libfdt.h>
+#include <fsl_debug_server.h>
+#include <fsl-mc/fsl_mc.h>
+#include <environment.h>
+#include <asm/arch-fsl-layerscape/soc.h>
+
+DECLARE_GLOBAL_DATA_PTR;
+
+int board_init(void)
+{
+	init_final_memctl_regs();
+
+#ifdef CONFIG_ENV_IS_NOWHERE
+	gd->env_addr = (ulong)&default_environment[0];
+#endif
+
+	return 0;
+}
+
+int board_early_init_f(void)
+{
+	fsl_lsch3_early_init_f();
+	return 0;
+}
+
+void detail_board_ddr_info(void)
+{
+	puts("\nDDR    ");
+	print_size(gd->bd->bi_dram[0].size, "");
+	print_ddr_info(0);
+}
+
+int dram_init(void)
+{
+	gd->ram_size = initdram(0);
+
+	return 0;
+}
+
+#if defined(CONFIG_ARCH_MISC_INIT)
+int arch_misc_init(void)
+{
+#ifdef CONFIG_FSL_DEBUG_SERVER
+	debug_server_init();
+#endif
+#ifdef CONFIG_FSL_CAAM
+	sec_init();
+#endif
+	return 0;
+}
+#endif
+
+#ifdef CONFIG_FSL_MC_ENET
+void fdt_fixup_board_enet(void *fdt)
+{
+	int offset;
+
+	offset = fdt_path_offset(fdt, "/fsl-mc");
+
+	if (offset < 0)
+		offset = fdt_path_offset(fdt, "/fsl,dprc@0");
+
+	if (offset < 0) {
+		printf("%s: ERROR: fsl-mc node not found in device tree (error %d)\n",
+		       __func__, offset);
+		return;
+	}
+
+	if (get_mc_boot_status() == 0)
+		fdt_status_okay(fdt, offset);
+	else
+		fdt_status_fail(fdt, offset);
+}
+#endif
+
+#ifdef CONFIG_OF_BOARD_SETUP
+int ft_board_setup(void *blob, bd_t *bd)
+{
+	int err;
+	u64 base[CONFIG_NR_DRAM_BANKS];
+	u64 size[CONFIG_NR_DRAM_BANKS];
+
+	ft_cpu_setup(blob, bd);
+
+	/* fixup DT for the two GPP DDR banks */
+	base[0] = gd->bd->bi_dram[0].start;
+	size[0] = gd->bd->bi_dram[0].size;
+
+	fdt_fixup_memory_banks(blob, base, size, 1);
+
+#ifdef CONFIG_FSL_MC_ENET
+	fdt_fixup_board_enet(blob);
+	err = fsl_mc_ldpaa_exit(bd);
+	if (err)
+		return err;
+#endif
+
+	return 0;
+}
+#endif
