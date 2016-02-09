@@ -577,6 +577,9 @@ The following options need to be configured:
 		CONFIG_SYS_FSL_SEC_LE
 		Defines the SEC controller register space as Little Endian
 
+		CONFIG_SYS_FSL_PLATFORM_CLK_RATIO
+		Defines the paltform clock ratio with respect to platform PLL.
+
 - Intel Monahans options:
 		CONFIG_SYS_MONAHANS_RUN_MODE_OSC_RATIO
 

@@ -92,7 +92,7 @@ void get_sys_info(struct sys_info *sys_info)
 			FSL_CHASSIS3_RCWSR0_SYS_PLL_RAT_SHIFT) &
 			FSL_CHASSIS3_RCWSR0_SYS_PLL_RAT_MASK;
 	/* Platform clock is half of platform PLL */
-	sys_info->freq_systembus /= 2;
+	sys_info->freq_systembus /= CONFIG_SYS_FSL_PLATFORM_CLK_RATIO;
 	sys_info->freq_ddrbus *= (gur_in32(&gur->rcwsr[0]) >>
 			FSL_CHASSIS3_RCWSR0_MEM_PLL_RAT_SHIFT) &
 			FSL_CHASSIS3_RCWSR0_MEM_PLL_RAT_MASK;
