@@ -66,21 +66,6 @@
 #define PCIE_LUT_LCTRL0				0x7F8
 #define PCIE_LUT_DBG				0x7FC
 
-/* TZ Address Space Controller Definitions */
-#define TZASC1_BASE			0x01100000	/* as per CCSR map. */
-#define TZASC2_BASE			0x01110000	/* as per CCSR map. */
-#define TZASC3_BASE			0x01120000	/* as per CCSR map. */
-#define TZASC4_BASE			0x01130000	/* as per CCSR map. */
-#define TZASC_BUILD_CONFIG_REG(x)	((TZASC1_BASE + (x * 0x10000)))
-#define TZASC_ACTION_REG(x)		((TZASC1_BASE + (x * 0x10000)) + 0x004)
-#define TZASC_GATE_KEEPER(x)		((TZASC1_BASE + (x * 0x10000)) + 0x008)
-#define TZASC_REGION_BASE_LOW_0(x)	((TZASC1_BASE + (x * 0x10000)) + 0x100)
-#define TZASC_REGION_BASE_HIGH_0(x)	((TZASC1_BASE + (x * 0x10000)) + 0x104)
-#define TZASC_REGION_TOP_LOW_0(x)	((TZASC1_BASE + (x * 0x10000)) + 0x108)
-#define TZASC_REGION_TOP_HIGH_0(x)	((TZASC1_BASE + (x * 0x10000)) + 0x10C)
-#define TZASC_REGION_ATTRIBUTES_0(x)	((TZASC1_BASE + (x * 0x10000)) + 0x110)
-#define TZASC_REGION_ID_ACCESS_0(x)	((TZASC1_BASE + (x * 0x10000)) + 0x114)
-
 #define TP_ITYP_AV              0x00000001      /* Initiator available */
 #define TP_ITYP_TYPE(x) (((x) & 0x6) >> 1)      /* Initiator Type */
 #define TP_ITYP_TYPE_ARM        0x0
