@@ -137,9 +137,9 @@ little endian style */
  */
 static void erratum_a008336(void)
 {
+#ifdef CONFIG_SYS_FSL_ERRATUM_A008336
 	u32 *eddrtqcr1;
 
-#ifdef CONFIG_SYS_FSL_ERRATUM_A008336
 #ifdef CONFIG_SYS_FSL_DCSR_DDR_ADDR
 	eddrtqcr1 = (void *)CONFIG_SYS_FSL_DCSR_DDR_ADDR + 0x800;
 	out_le32(eddrtqcr1, 0x63b30002);
@@ -157,9 +157,9 @@ static void erratum_a008336(void)
  */
 static void erratum_a008514(void)
 {
+#ifdef CONFIG_SYS_FSL_ERRATUM_A008514
 	u32 *eddrtqcr1;
 
-#ifdef CONFIG_SYS_FSL_ERRATUM_A008514
 #ifdef CONFIG_SYS_FSL_DCSR_DDR3_ADDR
 	eddrtqcr1 = (void *)CONFIG_SYS_FSL_DCSR_DDR3_ADDR + 0x800;
 	out_le32(eddrtqcr1, 0x63b20002);
