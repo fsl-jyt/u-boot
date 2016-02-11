@@ -626,8 +626,10 @@ int arch_early_init_r(void)
 
 int timer_init(void)
 {
-	u32 __iomem *cntcr = (u32 *)CONFIG_SYS_FSL_TIMER_ADDR;
+	u32 __iomem *cntcr;
 #ifdef CONFIG_FSL_LSCH3
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+	u32 svr, ver;
 	u32 __iomem *cltbenr = (u32 *)CONFIG_SYS_FSL_PMU_CLTBENR;
 #endif
 #ifdef COUNTER_FREQUENCY_REAL
@@ -636,6 +638,16 @@ int timer_init(void)
 	/* Update with accurate clock frequency */
 	asm volatile("msr cntfrq_el0, %0" : : "r" (cntfrq) : "memory");
 #endif
+
+#ifdef CONFIG_FSL_LSCH3
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
+	if ((ver == SVR_LS2080) || (ver == SVR_LS2040)
+	    || (ver == SVR_LS2085) || (ver == SVR_LS2045))
+		cntcr = (u32 *)CONFIG_SYS_FSL_LS2080A_LS2085A_TIMER_ADDR;
+	else
+#endif
+		cntcr = (u32 *)CONFIG_SYS_FSL_TIMER_ADDR;
 
 #ifdef CONFIG_FSL_LSCH3
 	/* Enable timebase for all clusters.
