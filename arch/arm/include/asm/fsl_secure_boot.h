@@ -49,8 +49,7 @@
 
 #endif
 
-#if defined(CONFIG_LS1043A) || defined(CONFIG_LS2080A) ||\
-	defined(CONFIG_LS2085A)
+#ifdef CONFIG_FSL_LAYERSCAPE
 /* For LS1043 (ARMv8), ESBC image Address in Header is 64 bit
  * Similiarly for LS2080 and LS2085
  */
