@@ -14,6 +14,7 @@
 #include <asm/arch/soc.h>
 #include <asm/arch/cpu.h>
 #include <asm/arch/speed.h>
+#include <fsl_immap.h>
 #ifdef CONFIG_MP
 #include <asm/arch/mp.h>
 #endif
@@ -598,6 +599,14 @@ int arch_early_init_r(void)
 {
 #ifdef CONFIG_MP
 	int rv = 1;
+#endif
+
+#ifdef CONFIG_SYS_FSL_HAS_CCI400
+	struct ccsr_cci400 *cci = (struct ccsr_cci400 *)CONFIG_SYS_CCI400_ADDR;
+	/*
+	 * Set CCI-400 control override register to enable barrier transaction
+	 */
+	out_le32(&cci->ctrl_ord, CCI400_CTRLORD_EN_BARRIER);
 #endif
 
 #ifdef CONFIG_SYS_FSL_ERRATUM_A009635
