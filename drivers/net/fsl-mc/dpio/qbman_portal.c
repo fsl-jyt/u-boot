@@ -61,7 +61,8 @@ enum qbman_sdqcr_fc {
 
 /* Software portals should always be in the power-on state when we initialise,
  * due to the CCSR-based portal reset functionality that MC has. */
-struct qbman_swp *qbman_swp_init(const struct qbman_swp_desc *d)
+struct qbman_swp *qbman_swp_init(const struct qbman_swp_desc *d, uint16_t
+				 major, uint16_t minor)
 {
 	int ret;
 	struct qbman_swp *p = malloc(sizeof(struct qbman_swp));
@@ -80,8 +81,15 @@ struct qbman_swp *qbman_swp_init(const struct qbman_swp_desc *d)
 	atomic_set(&p->vdq.busy, 1);
 	p->vdq.valid_bit = QB_VALID_BIT;
 	p->dqrr.next_idx = 0;
+
+	if (major >=4 && minor >=1)
+		p->dqrr.dqrr_size = 8;
+	else
+		p->dqrr.dqrr_size = 4;
+
+
 	p->dqrr.valid_bit = QB_VALID_BIT;
-	ret = qbman_swp_sys_init(&p->sys, d);
+	ret = qbman_swp_sys_init(&p->sys, d, p->dqrr.dqrr_size);
 	if (ret) {
 		free(p);
 		printf("qbman_swp_sys_init() failed %d\n", ret);
@@ -380,7 +388,7 @@ const struct ldpaa_dq *qbman_swp_dqrr_next(struct qbman_swp *s)
 	/* There's something there. Move "next_idx" attention to the next ring
 	 * entry (and prefetch it) before returning what we found. */
 	s->dqrr.next_idx++;
-	s->dqrr.next_idx &= QBMAN_DQRR_SIZE - 1; /* Wrap around at 4 */
+	s->dqrr.next_idx &= s->dqrr.dqrr_size - 1;/* Wrap around at dqrr_size */
 	/* TODO: it's possible to do all this without conditionals, optimise it
 	 * later. */
 	if (!s->dqrr.next_idx)
