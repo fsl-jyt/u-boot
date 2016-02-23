@@ -528,12 +528,17 @@ int print_cpuinfo(void)
 	struct sys_info sysinfo;
 	char buf[32];
 	unsigned int i, core;
+	uint svr, major, minor;
 	u32 type, rcw;
 
 	puts("SoC: ");
 
 	cpu_name(buf);
-	printf(" %s (0x%x)\n", buf, gur_in32(&gur->svr));
+	svr = gur_in32(&gur->svr);
+	major = SVR_MAJ(svr);
+	minor = SVR_MIN(svr);
+	printf(" %s Version:%d.%d (0x%x)\n", buf, major, minor, svr);
+
 	memset((u8 *)buf, 0x00, ARRAY_SIZE(buf));
 	get_sys_info(&sysinfo);
 	puts("Clock Configuration:");
