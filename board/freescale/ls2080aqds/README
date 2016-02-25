@@ -2,7 +2,8 @@ Overview
 --------
 The LS2080A Development System (QDS) is a high-performance computing,
 evaluation, and development platform that supports the QorIQ LS2080A
-Layerscape Architecture processor. The LS2080AQDS provides validation and
+and LS2088A (and its personalities) Layerscape Architecture processor.
+The LS2080AQDS provides validation and
 SW development platform for the Freescale LS2080A processor series, with
 a complete debugging environment.
 
@@ -49,6 +50,49 @@ The LS2080A SoC includes the following function and features:
  - QorIQ platform's trust architecture 3.0
  - Service processor (SP) provides pre-boot initialization and secure-boot
   capabilities
+
+LS2088A SoC Overview
+------------------
+The QorIQ LS2088A processor is built on the Layerscape
+architecture combining eight ARM A72 processor cores
+with advanced, high-performance datapath acceleration
+and network, peripheral interfaces required for
+networking, telecom, wireless infrastructure, aerospace
+applications and general-purpose embedded applications.
+
+Features summary:
+ - Eight 64-bit ARM v8 Cortex-A72 CPUs
+ - Two 64-bit DDR4 SDRAM memory controller with ECC
+ - One 32-bit DDR3 SDRAM memory controller with ECC
+ - Data path acceleration architecture 2.0 (DPAA2)
+ - Ethernet interfaces
+ - IFC, 4 PCIe, 2 SATA, 2 USB, 1 SDXC, 2 DUARTs etc
+ - AIOP
+ - 8 * 1/10G + 8 *1G WRIOP
+ - L2 switch
+
+LS2088A is compliant to the Layerscape Chassis Generation 3.
+
+LS2088A SoC is similar to LS2085A Soc with some differences like
+1)Timer controller offset is different
+2)Errata A009635 and A008751 are fixed
+3)Maia core
+
+These differences can be detected via runtime during boot.
+So LS2085A, LS2088A will have common u-boot image
+
+LS2088A SoC has 3 more similar SoC personalities
+1)LS2048A, few difference w.r.t LS2088A:
+	a) Four 64-bit ARM v8 Cortex-A72 CPUs
+
+2)LS2084A, few difference w.r.t LS2088A:
+	a) No AIOP
+	b) No 32-bit DDR3 SDRAM memory
+	c) 5 * 1/10G + 5 *1G WRIOP
+	d) No L2 switch
+
+3)LS2044A, few difference w.r.t LS2084A:
+	a) Four 64-bit ARM v8 Cortex-A72 CPUs
 
  LS2080AQDS board Overview
  -----------------------
