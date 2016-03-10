@@ -139,16 +139,29 @@ little endian style */
 static void erratum_a008336(void)
 {
 #ifdef CONFIG_SYS_FSL_ERRATUM_A008336
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+	unsigned int svr, ver;
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
 	u32 *eddrtqcr1;
+	switch (ver) {
+	case SVR_LS2080:
+	case SVR_LS2085:
+	case SVR_LS2040:
+	case SVR_LS2045:
 
 #ifdef CONFIG_SYS_FSL_DCSR_DDR_ADDR
-	eddrtqcr1 = (void *)CONFIG_SYS_FSL_DCSR_DDR_ADDR + 0x800;
-	out_le32(eddrtqcr1, 0x63b30002);
+		eddrtqcr1 = (void *)CONFIG_SYS_FSL_DCSR_DDR_ADDR + 0x800;
+		out_le32(eddrtqcr1, 0x63b30002);
 #endif
 #ifdef CONFIG_SYS_FSL_DCSR_DDR2_ADDR
-	eddrtqcr1 = (void *)CONFIG_SYS_FSL_DCSR_DDR2_ADDR + 0x800;
-	out_le32(eddrtqcr1, 0x63b30002);
+		eddrtqcr1 = (void *)CONFIG_SYS_FSL_DCSR_DDR2_ADDR + 0x800;
+		out_le32(eddrtqcr1, 0x63b30002);
 #endif
+		break;
+	default:
+		break;
+	}
 #endif
 }
 
@@ -159,12 +172,25 @@ static void erratum_a008336(void)
 static void erratum_a008514(void)
 {
 #ifdef CONFIG_SYS_FSL_ERRATUM_A008514
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+	unsigned int svr, ver;
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
 	u32 *eddrtqcr1;
+	switch (ver) {
+	case SVR_LS2080:
+	case SVR_LS2085:
+	case SVR_LS2040:
+	case SVR_LS2045:
 
 #ifdef CONFIG_SYS_FSL_DCSR_DDR3_ADDR
-	eddrtqcr1 = (void *)CONFIG_SYS_FSL_DCSR_DDR3_ADDR + 0x800;
-	out_le32(eddrtqcr1, 0x63b20002);
+		eddrtqcr1 = (void *)CONFIG_SYS_FSL_DCSR_DDR3_ADDR + 0x800;
+		out_le32(eddrtqcr1, 0x63b20002);
 #endif
+		break;
+	default:
+		break;
+	}
 #endif
 }
 #ifdef CONFIG_SYS_FSL_ERRATUM_A009635
@@ -323,6 +349,9 @@ void fsl_lsch3_early_init_f(void)
 	erratum_rcw_src();
 	init_early_memctl_regs();	/* tighten IFC timing */
 	erratum_a009203();
+	/* disable these performance critical errata
+	 * since it cause the PXP failure for LS2088A
+	 */
 	erratum_a008514();
 	erratum_a008336();
 #ifdef CONFIG_CHAIN_OF_TRUST
