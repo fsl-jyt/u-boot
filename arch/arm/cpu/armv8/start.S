@@ -11,6 +11,9 @@
 #include <asm/macro.h>
 #include <asm/armv8/mmu.h>
 
+#define DCSR_SYS_DCFG_SBEESR2	0x20140534
+#define DCSR_SYS_DCFG_MBEESR2	0x20140544
+
 /*************************************************************************
  *
  * Startup Code (reset vector)
@@ -215,9 +218,45 @@ WEAK(lowlevel_init)
 #endif /* CONFIG_ARMV8_MULTIENTRY */
 
 2:
+#if defined(CONFIG_FSL_LSCH2) && !defined(CONFIG_SPL_BUILD)
+	bl	fsl_ocram_init
+#endif
 	mov	lr, x29			/* Restore LR */
 	ret
 ENDPROC(lowlevel_init)
+
+#if defined(CONFIG_FSL_LSCH2) && !defined(CONFIG_SPL_BUILD)
+ENTRY(fsl_ocram_init)
+	mov	x28, lr			/* Save LR */
+	bl	fsl_clear_ocram
+	bl	fsl_ocram_clear_ecc_err
+	mov	lr, x28			/* Restore LR */
+	ret
+ENDPROC(fsl_ocram_init)
+
+ENTRY(fsl_clear_ocram)
+/* Clear OCRAM */
+	ldr	x0, =CONFIG_SYS_FSL_OCRAM_BASE
+	ldr	x1, =(CONFIG_SYS_FSL_OCRAM_BASE + CONFIG_SYS_FSL_OCRAM_SIZE)
+	mov	x2, #0
+clear_loop:
+	str	x2, [x0]
+	add	x0, x0, #8
+	cmp	x0, x1
+	b.lo	clear_loop
+	ret
+ENDPROC(fsl_clear_ocram)
+
+ENTRY(fsl_ocram_clear_ecc_err)
+	/* OCRAM1/2 ECC status bit */
+	mov	w1, #0x60
+	ldr	x0, =DCSR_SYS_DCFG_SBEESR2
+	str	w1, [x0]
+	ldr	x0, =DCSR_SYS_DCFG_MBEESR2
+	str	w1, [x0]
+	ret
+ENDPROC(fsl_ocram_init)
+#endif
 
 WEAK(smp_kick_all_cpus)
 	/* Kick secondary cpus up by SGI 0 interrupt */
