@@ -12,8 +12,10 @@
 #include <asm/io.h>
 #include <asm/global_data.h>
 #include <asm/arch-fsl-layerscape/config.h>
+#ifdef CONFIG_SYS_FSL_DDR
 #include <fsl_ddr_sdram.h>
 #include <fsl_ddr.h>
+#endif
 #ifdef CONFIG_CHAIN_OF_TRUST
 #include <fsl_validate.h>
 #endif
@@ -46,14 +48,16 @@ static void erratum_a009008(void)
 static void erratum_a009798(void)
 {
 #ifdef CONFIG_SYS_FSL_ERRATUM_A009798
-#if defined(CONFIG_LS1043A)
+#if defined(CONFIG_LS1043A) || defined(CONFIG_LS1012A)
 	u32 __iomem *scfg = (u32 __iomem *)SCFG_BASE;
 	u32 val = scfg_in32(scfg + SCFG_USB3PRM1CR_USB1 / 4);
 	scfg_out32(scfg + SCFG_USB3PRM1CR_USB1 / 4 , val & USB_SQRXTUNE);
+#if defined(CONFIG_LS1043A)
 	val = gur_in32(scfg + SCFG_USB3PRM1CR_USB2 / 4);
 	scfg_out32(scfg + SCFG_USB3PRM1CR_USB2 / 4 , val & USB_SQRXTUNE);
 	val = scfg_in32(scfg + SCFG_USB3PRM1CR_USB3 / 4);
 	scfg_out32(scfg + SCFG_USB3PRM1CR_USB3 / 4 , val & USB_SQRXTUNE);
+#endif
 #elif defined(CONFIG_LS2080A) || defined(CONFIG_LS2085A)
 	u32 __iomem *scfg = (u32 __iomem *)SCFG_BASE;
 	u32 val = scfg_in32(scfg + SCFG_USB3PRM1CR / 4);

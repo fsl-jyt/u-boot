@@ -33,6 +33,7 @@ void get_sys_info(struct sys_info *sys_info)
 #endif
 	struct ccsr_clk *clk = (void *)(CONFIG_SYS_FSL_CLK_ADDR);
 	unsigned int cpu;
+	unsigned int svr, ver;
 	const u8 core_cplx_pll[8] = {
 		[0] = 0,	/* CC1 PPL / 1 */
 		[1] = 0,	/* CC1 PPL / 2 */
@@ -59,12 +60,20 @@ void get_sys_info(struct sys_info *sys_info)
 	sys_info->freq_ddrbus = sysclk;
 #endif
 
-	sys_info->freq_systembus *= (gur_in32(&gur->rcwsr[0]) >>
-			FSL_CHASSIS2_RCWSR0_SYS_PLL_RAT_SHIFT) &
-			FSL_CHASSIS2_RCWSR0_SYS_PLL_RAT_MASK;
-	sys_info->freq_ddrbus *= (gur_in32(&gur->rcwsr[0]) >>
-			FSL_CHASSIS2_RCWSR0_MEM_PLL_RAT_SHIFT) &
-			FSL_CHASSIS2_RCWSR0_MEM_PLL_RAT_MASK;
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
+	if (ver == SVR_LS1012) {
+		sys_info->freq_ddrbus *= (gur_in32(&gur->rcwsr[0]) >>
+				FSL_CHASSIS2_RCWSR0_SYS_PLL_RAT_SHIFT) &
+				FSL_CHASSIS2_RCWSR0_SYS_PLL_RAT_MASK;
+	} else {
+		sys_info->freq_systembus *= (gur_in32(&gur->rcwsr[0]) >>
+				FSL_CHASSIS2_RCWSR0_SYS_PLL_RAT_SHIFT) &
+				FSL_CHASSIS2_RCWSR0_SYS_PLL_RAT_MASK;
+		sys_info->freq_ddrbus *= (gur_in32(&gur->rcwsr[0]) >>
+				FSL_CHASSIS2_RCWSR0_MEM_PLL_RAT_SHIFT) &
+				FSL_CHASSIS2_RCWSR0_MEM_PLL_RAT_MASK;
+	}
 
 	for (i = 0; i < CONFIG_SYS_FSL_NUM_CC_PLLS; i++) {
 		ratio[i] = (in_be32(&clk->pllcgsr[i].pllcngsr) >> 1) & 0xff;
@@ -82,6 +91,9 @@ void get_sys_info(struct sys_info *sys_info)
 		sys_info->freq_processor[cpu] =
 			freq_c_pll[cplx_pll] / core_cplx_pll_div[c_pll_sel];
 	}
+
+	if (ver == SVR_LS1012)
+		sys_info->freq_systembus = sys_info->freq_ddrbus / 2;
 
 #define HWA_CGA_M1_CLK_SEL	0xe0000000
 #define HWA_CGA_M1_CLK_SHIFT	29
