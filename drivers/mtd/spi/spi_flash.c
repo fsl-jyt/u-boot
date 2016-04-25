@@ -1033,7 +1033,8 @@ int spi_flash_scan(struct spi_flash *flash)
 	 * sector that is not overlaid by the parameter sectors.
 	 * The uniform sector erase command has no effect on parameter sectors.
 	 */
-	if (jedec == 0x0219 && (ext_jedec & 0xff00) == 0x4d00) {
+	if ((jedec == 0x0219 || (jedec == 0x0220)) &&
+	    (ext_jedec & 0xff00) == 0x4d00) {
 		int ret;
 		u8 id[6];
 
