@@ -12,7 +12,7 @@
 #define CONFIG_LS1012A
 #define CONFIG_GICV2
 
-#define	CONFIG_SYS_HAS_SERDES
+#define CONFIG_SYS_HAS_SERDES
 
 #include <asm/arch/config.h>
 #define CONFIG_SYS_NO_FLASH
@@ -56,7 +56,6 @@
 #define CONFIG_ENV_SPI_MODE		0x03
 #define CONFIG_CMD_SF
 #define CONFIG_SPI_FLASH_SPANSION
-#define CONFIG_SPI_FLASH_ATMEL
 #define CONFIG_FSL_SPI_INTERFACE
 #define CONFIG_SF_DATAFLASH
 
