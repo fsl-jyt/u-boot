@@ -27,6 +27,7 @@
 #endif
 
 #define CONFIG_QIXIS_I2C_ACCESS
+#define CONFIG_SYS_I2C_FPGA_ADDR	0x66
 
 /*
  * I2C bus multiplexer
@@ -144,5 +145,7 @@
 #define CONFIG_CMD_MEMTEST
 #define CONFIG_SYS_MEMTEST_START	0x80000000
 #define CONFIG_SYS_MEMTEST_END		0x9fffffff
+
+#define CONFIG_MISC_INIT_R
 
 #endif /* __LS1012AQDS_H__ */

@@ -154,6 +154,18 @@ int board_early_init_f(void)
 	return 0;
 }
 
+#ifdef CONFIG_MISC_INIT_R
+int misc_init_r(void)
+{
+	u8 mux_sdhc_cd = 0x80;
+
+	i2c_set_bus_num(0);
+
+	i2c_write(CONFIG_SYS_I2C_FPGA_ADDR, 0x5a, 1, &mux_sdhc_cd, 1);
+	return 0;
+}
+#endif
+
 int board_init(void)
 {
 	struct ccsr_cci400 *cci = (struct ccsr_cci400 *)
