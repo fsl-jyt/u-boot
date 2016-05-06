@@ -50,7 +50,7 @@
 #endif
 
 #if defined(CONFIG_LS1043A) || defined(CONFIG_LS2080A) ||\
-	defined(CONFIG_LS2085A)
+	defined(CONFIG_LS2085A) || defined(CONFIG_LS1012A)
 /* For LS1043 (ARMv8), ESBC image Address in Header is 64 bit
  * Similiarly for LS2080 and LS2085
  */
@@ -81,6 +81,11 @@
 #define CONFIG_BS_ADDR_FLASH		0x583900000
 #define CONFIG_BS_HDR_ADDR_RAM		0xa3920000
 #define CONFIG_BS_ADDR_RAM		0xa3900000
+#elif defined(CONFIG_LS1012A)
+#define CONFIG_BS_HDR_ADDR_FLASH	0x400c0000
+#define CONFIG_BS_ADDR_FLASH		0x40060000
+#define CONFIG_BS_HDR_ADDR_RAM		0xa0060000
+#define CONFIG_BS_ADDR_RAM		0xa0060000
 #else
 #define CONFIG_BS_HDR_ADDR_FLASH	0x600a0000
 #define CONFIG_BS_ADDR_FLASH		0x60060000

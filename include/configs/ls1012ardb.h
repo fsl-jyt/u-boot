@@ -73,4 +73,6 @@
 #define CONFIG_SYS_MEMTEST_START	0x80000000
 #define CONFIG_SYS_MEMTEST_END		0x9fffffff
 
+#define CONFIG_FSL_CAAM			/* Enable CAAM */
+
 #endif /* __LS1012ARDB_H__ */

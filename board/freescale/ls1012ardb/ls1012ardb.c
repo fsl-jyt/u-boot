@@ -20,6 +20,7 @@
 #include <environment.h>
 #include <fsl_mmdc.h>
 #include <netdev.h>
+#include <fsl_sec.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -189,6 +190,10 @@ int board_init(void)
 
 #ifdef CONFIG_LAYERSCAPE_NS_ACCESS
 	enable_layerscape_ns_access();
+#endif
+
+#ifdef CONFIG_FSL_CAAM
+	sec_init();
 #endif
 
 	return 0;

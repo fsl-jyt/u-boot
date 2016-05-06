@@ -237,6 +237,13 @@
 
 #define CONFIG_SYS_FSL_ERRATUM_A009798
 
+#define CONFIG_SYS_FSL_SFP_VER_3_2
+#define CONFIG_SYS_FSL_SEC_MON_BE
+#define CONFIG_SYS_FSL_SEC_BE
+#define CONFIG_SYS_FSL_SFP_BE
+#define CONFIG_SYS_FSL_SRK_LE
+#define CONFIG_KEY_REVOCATION
+
 #else
 #error SoC not defined
 #endif
