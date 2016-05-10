@@ -100,8 +100,16 @@ static uint esdhc_xfertyp(struct mmc_cmd *cmd, struct mmc_data *data)
 		xfertyp |= XFERTYP_CICEN;
 	if (cmd->resp_type & MMC_RSP_136)
 		xfertyp |= XFERTYP_RSPTYP_136;
-	else if (cmd->resp_type & MMC_RSP_BUSY)
-		xfertyp |= XFERTYP_RSPTYP_48_BUSY;
+	/*
+	 * For CMD with busy response, the eSDHC driver would poll DAT0
+	 * until CMD completion rather than polling IRQSTAT. So, don't
+	 * set XFERTYP_RSPTYP_48_BUSY to avoid interrupts (DTOE or TC)
+	 * in IRQSTAT.
+	 *
+	 * Remove:
+	 * else if (cmd->resp_type & MMC_RSP_BUSY)
+	 *      xfertyp |= XFERTYP_RSPTYP_48_BUSY;
+	 */
 	else if (cmd->resp_type & MMC_RSP_PRESENT)
 		xfertyp |= XFERTYP_RSPTYP_48;
 
