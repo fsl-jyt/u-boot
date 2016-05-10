@@ -44,8 +44,26 @@ static void set_wait_for_bits_clear(void *ptr, u32 value, u32 bits)
 
 int checkboard(void)
 {
-	puts("Board: LS1012AQDS\n");
+	char buf[64];
+	u8 sw;
 
+	sw = QIXIS_READ(arch);
+	printf("Board Arch: V%d, ", sw >> 4);
+	printf("Board version: %c, boot from ", (sw & 0xf) + 'A' - 1);
+
+	sw = QIXIS_READ(brdcfg[QIXIS_LBMAP_BRDCFG_REG]);
+
+	if (sw & QIXIS_LBMAP_ALTBANK)
+		printf("flash: 2\n");
+	else
+		printf("flash: 1\n");
+
+	printf("FPGA: v%d (%s), build %d",
+			(int)QIXIS_READ(scver), qixis_read_tag(buf),
+			(int)qixis_read_minor());
+
+	/* the timestamp string contains "\n" at the end */
+	printf(" on %s", qixis_read_time(buf));
 	return 0;
 }
 
