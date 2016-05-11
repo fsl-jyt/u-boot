@@ -85,6 +85,9 @@ save_boot_params_ret:
 	mov	x0, #3 << 20
 	msr	cpacr_el1, x0			/* Enable FP/SIMD */
 0:
+	/* Enalbe SMPEN bit */
+	mov	x0, #0x40
+	msr	s3_1_c15_c2_1, x0
 
 	/* Apply ARM core specific erratas */
 	bl	apply_core_errata
