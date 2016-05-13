@@ -276,8 +276,24 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
 	announce_and_cleanup(fake);
 
 	if (!fake) {
-		do_nonsec_virt_switch();
-		kernel_entry(images->ft_addr, NULL, NULL, NULL);
+		if ((IH_ARCH_DEFAULT == IH_ARCH_ARM64) &&
+		    (images->os.arch == IH_ARCH_ARM)) {
+			smp_kick_all_cpus();
+			dcache_disable();
+#ifdef CONFIG_ARMV8_SWITCH_TO_EL1
+			armv8_switch_to_el2();
+			armv8_switch_to_el1_aarch32((u64)images->ep,
+						    (u64)gd->bd->bi_arch_number,
+						    (u64)images->ft_addr);
+#else
+			armv8_switch_to_el2_aarch32((u64)images->ep,
+						    (u64)gd->bd->bi_arch_number,
+						    (u64)images->ft_addr);
+#endif
+		} else {
+			do_nonsec_virt_switch();
+			kernel_entry(images->ft_addr, NULL, NULL, NULL);
+		}
 	}
 #else
 	unsigned long machid = gd->bd->bi_arch_number;

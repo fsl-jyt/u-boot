@@ -81,6 +81,8 @@ int __asm_flush_l3_cache(void);
 
 void armv8_switch_to_el2(void);
 void armv8_switch_to_el1(void);
+void armv8_switch_to_el2_aarch32(u64 entry_point, u64 mach_nr, u64 fdt_addr);
+void armv8_switch_to_el1_aarch32(u64 entry_point, u64 mach_nr, u64 fdt_addr);
 void gic_init(void);
 void gic_send_sgi(unsigned long sgino);
 void wait_for_wakeup(void);
