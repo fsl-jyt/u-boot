@@ -258,6 +258,10 @@ bool armv7_boot_nonsec(void)
 }
 #endif
 
+__weak void update_os_arch_secondary_cores(uint8_t os_arch)
+{
+}
+
 /* Subcommand: GO */
 static void boot_jump_linux(bootm_headers_t *images, int flag)
 {
@@ -276,6 +280,7 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
 	announce_and_cleanup(fake);
 
 	if (!fake) {
+		update_os_arch_secondary_cores(images->os.arch);
 		if ((IH_ARCH_DEFAULT == IH_ARCH_ARM64) &&
 		    (images->os.arch == IH_ARCH_ARM)) {
 			smp_kick_all_cpus();

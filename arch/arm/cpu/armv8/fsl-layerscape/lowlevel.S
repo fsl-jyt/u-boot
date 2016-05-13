@@ -13,6 +13,7 @@
 #ifdef CONFIG_MP
 #include <asm/arch/mp.h>
 #endif
+#include <asm/u-boot.h>
 
 ENTRY(lowlevel_init)
 	mov	x29, lr			/* Save LR */
@@ -320,6 +321,11 @@ ENTRY(secondary_boot_func)
         gic_wait_for_interrupt_m x0, w1
 #endif
 
+	ldr	x5, [x11, #24]
+	ldr	x6, =IH_ARCH_DEFAULT
+	cmp	x6, x5
+	b.ne	slave_cpu
+
 	bl secondary_switch_to_el2
 #ifdef CONFIG_ARMV8_SWITCH_TO_EL1
 	bl secondary_switch_to_el1
@@ -337,6 +343,21 @@ slave_cpu:
 	tbz     x1, #25, cpu_is_le
 	rev     x0, x0                  /* BE to LE conversion */
 cpu_is_le:
+
+	ldr	x5, [x11, #24]
+	ldr	x6, =IH_ARCH_DEFAULT
+	cmp	x6, x5
+	b.eq	1f
+
+#ifdef CONFIG_ARMV8_SWITCH_TO_EL1
+	bl	secondary_switch_to_el2
+	ldr	x0, [x11]
+	bl	armv8_switch_to_el1_aarch32
+#else
+	bl	armv8_switch_to_el2_aarch32
+#endif
+
+1:
 	br	x0			/* branch to the given address */
 ENDPROC(secondary_boot_func)
 
