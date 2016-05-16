@@ -20,6 +20,20 @@
 
 #define DEFAULT_PFE_MDIO_NAME "PFE_MDIO"
 
+
+void reset_phy(void)
+{
+
+	/*Through reset IO expander reset both RGMII and SGMII PHYs */
+	i2c_reg_write(CONFIG_SYS_I2C_RESET_IO_EXPANDER, 6, __PHY_MASK);
+	i2c_reg_write(CONFIG_SYS_I2C_RESET_IO_EXPANDER, 2, __PHY_ETH2_MASK);
+	mdelay(10);
+	i2c_reg_write(CONFIG_SYS_I2C_RESET_IO_EXPANDER, 2, __PHY_ETH1_MASK);
+	mdelay(10);
+	i2c_reg_write(CONFIG_SYS_I2C_RESET_IO_EXPANDER, 2, 0xFF);
+	mdelay(50);
+}
+
 int board_eth_init(bd_t *bis)
 {
 #ifdef CONFIG_FSL_PPFE
