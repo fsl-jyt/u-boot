@@ -665,7 +665,7 @@ void ft_pci_setup(void *blob, bd_t *bd)
 }
 #endif
 
-#if defined(CONFIG_LS2080A) || defined(CONFIG_LS2085A)
+#ifdef CONFIG_FSL_LSCH3
 
 void pcie_set_available_streamids(void *blob, const char *pcie_path,
 				  u32 *stream_ids, int count)

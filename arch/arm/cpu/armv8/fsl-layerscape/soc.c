@@ -130,7 +130,7 @@ little endian style */
 #endif /* CONFIG_SYS_FSL_ERRATUM_A009007 */
 }
 
-#if defined(CONFIG_LS2080A) || defined(CONFIG_LS2085A)
+#ifdef CONFIG_FSL_LSCH3
 /*
  * This erratum requires setting a value to eddrtqcr1 to
  * optimal the DDR performance.
