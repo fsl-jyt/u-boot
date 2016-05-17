@@ -31,6 +31,7 @@
 #define pex_lut_out32(a, v)   out_be32(a, v)
 #endif
 
+#ifndef __ASSEMBLY__
 struct cpu_type {
 	char name[15];
 	u32 soc_ver;
@@ -39,7 +40,7 @@ struct cpu_type {
 
 #define CPU_TYPE_ENTRY(n, v, nc) \
 	{ .name = #n, .soc_ver = SVR_##v, .num_cores = (nc)}
-
+#endif
 #define SVR_WO_E		0xFFFFFE
 #define SVR_LS1043		0x879200
 #define SVR_LS1023		0x879208
@@ -50,6 +51,8 @@ struct cpu_type {
 #define SVR_LS1048		0x870320
 #define SVR_LS1084		0x870310
 #define SVR_LS1088		0x870300
+
+#define SVR_DEV_LS2080		0x8701
 
 #define SVR_MAJ(svr)		(((svr) >> 4) & 0xf)
 #define SVR_MIN(svr)		(((svr) >> 0) & 0xf)
@@ -62,6 +65,7 @@ struct cpu_type {
 #define AHCI_PORT_PHY_3_CFG    0x0e081509
 #define AHCI_PORT_TRANS_CFG    0x08000029
 
+#ifndef __ASSEMBLY__
 /* AHCI (sata) register map */
 struct ccsr_ahci {
 	u32 res1[0xa4/4];	/* 0x0 - 0xa4 */
@@ -96,5 +100,6 @@ void fsl_lsch2_early_init_f(void);
 void cpu_name(char *name);
 #ifdef CONFIG_SYS_FSL_ERRATUM_A009635
 void erratum_a009635(void);
+#endif
 #endif
 #endif /* _ASM_ARMV8_FSL_LAYERSCAPE_SOC_H_ */

@@ -10,6 +10,8 @@
 #include <linux/linkage.h>
 #include <asm/gic.h>
 #include <asm/macro.h>
+#include <asm/arch-fsl-layerscape/immap_lsch3.h>
+#include <asm/arch-fsl-layerscape/soc.h>
 #ifdef CONFIG_MP
 #include <asm/arch/mp.h>
 #endif
@@ -142,6 +144,15 @@ ENTRY(lowlevel_init)
 	 * NOTE: As per the CCSR map doc, TZASC 3 and TZASC 4 are just
 	 * 	 placeholders.
 	 */
+
+	bl	svr_dev_id		/* get high 16 bits of SVR */
+	/*
+	 * Skip TZASC related operations for LS2080 and its personlaities
+	 */
+	ldr	x1, =SVR_DEV_LS2080
+	cmp	x0, x1
+	b.eq	1f
+
 #ifdef CONFIG_FSL_TZASC_1
 	ldr	x1, =TZASC_GATE_KEEPER(0)
 	ldr	w0, [x1]		/* Filter 0 Gate Keeper Register */
@@ -179,9 +190,15 @@ ENTRY(lowlevel_init)
 	isb
 	dsb	sy
 #endif
-	mov	lr, x29			/* Restore LR */
+1:	mov	lr, x29			/* Restore LR */
 	ret
 ENDPROC(lowlevel_init)
+
+svr_dev_id:
+	ldr	x1, =FSL_LSCH3_SVR
+	ldr	w0, [x1]
+	lsr	w0, w0, #16
+	ret
 
 #ifdef CONFIG_SYS_FSL_HAS_CCN504
 hnf_pstate_poll:

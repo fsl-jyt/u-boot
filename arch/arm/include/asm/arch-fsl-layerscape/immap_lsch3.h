@@ -28,6 +28,8 @@
 #define CONFIG_SYS_FSL_TIMER_ADDR		0x023e0000
 #define CONFIG_SYS_FSL_PMU_CLTBENR		(CONFIG_SYS_FSL_PMU_ADDR + \
 						 0x18A0)
+#define FSL_LSCH3_SVR				(CONFIG_SYS_FSL_GUTS_ADDR + \
+						 0xA4)
 
 #define CONFIG_SYS_FSL_WRIOP1_ADDR		(CONFIG_SYS_IMMR + 0x7B80000)
 #define CONFIG_SYS_FSL_WRIOP1_MDIO1	(CONFIG_SYS_FSL_WRIOP1_ADDR + 0x16000)
@@ -156,6 +158,7 @@
 #define TP_INIT_PER_CLUSTER     4
 /* This is chassis generation 3 */
 
+#ifndef __ASSEMBLY__
 struct sys_info {
 	unsigned long freq_processor[CONFIG_MAX_CPUS];
 	unsigned long freq_systembus;
@@ -338,4 +341,5 @@ struct ccsr_reset {
 	u32 ip_rev1;			/* 0xbf8 */
 	u32 ip_rev2;			/* 0xbfc */
 };
+#endif
 #endif /* __ARCH_FSL_LSCH3_IMMAP_H_ */
