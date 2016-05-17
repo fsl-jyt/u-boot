@@ -274,10 +274,15 @@ unsigned long long get_qixis_addr(void);
 				"earlycon=uart8250,mmio,0x21c0500 " \
 				"ramdisk_size=0x2000000 default_hugepagesz=2m" \
 				" hugepagesz=2m hugepages=256"
+#ifdef CONFIG_EMU
+#define CONFIG_BOOTCOMMAND	"bootm $kernel_load"
+#define CONFIG_BOOTDELAY		3
+#else
 #define CONFIG_BOOTCOMMAND	"fsl_mc apply dpl 0x580700000 &&" \
 				" cp.b $kernel_start $kernel_load" \
 				" $kernel_size && bootm $kernel_load"
 #define CONFIG_BOOTDELAY		10
+#endif
 
 /* Monitor Command Prompt */
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
