@@ -187,34 +187,59 @@ static unsigned long get_internval_val_mhz(void)
 
 void erratum_a009635(void)
 {
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+	unsigned int svr, ver;
 	u32 val;
 	unsigned long interval_mhz = get_internval_val_mhz();
 
-	if (!interval_mhz)
-		return;
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
+	switch (ver) {
+	case SVR_LS2080:
+	case SVR_LS2085:
+	case SVR_LS2040:
+	case SVR_LS2045:
+		if (!interval_mhz)
+			return;
 
-	val = in_le32(DCSR_CGACRE5);
-	writel(val | 0x00000200, DCSR_CGACRE5);
+		val = in_le32(DCSR_CGACRE5);
+		writel(val | 0x00000200, DCSR_CGACRE5);
 
-	val = in_le32(EPU_EPCMPR5);
-	writel(interval_mhz, EPU_EPCMPR5);
-	val = in_le32(EPU_EPCCR5);
-	writel(val | 0x82820000, EPU_EPCCR5);
-	val = in_le32(EPU_EPSMCR5);
-	writel(val | 0x002f0000, EPU_EPSMCR5);
-	val = in_le32(EPU_EPECR5);
-	writel(val | 0x20000000, EPU_EPECR5);
-	val = in_le32(EPU_EPGCR);
-	writel(val | 0x80000000, EPU_EPGCR);
+		val = in_le32(EPU_EPCMPR5);
+		writel(interval_mhz, EPU_EPCMPR5);
+		val = in_le32(EPU_EPCCR5);
+		writel(val | 0x82820000, EPU_EPCCR5);
+		val = in_le32(EPU_EPSMCR5);
+		writel(val | 0x002f0000, EPU_EPSMCR5);
+		val = in_le32(EPU_EPECR5);
+		writel(val | 0x20000000, EPU_EPECR5);
+		val = in_le32(EPU_EPGCR);
+		writel(val | 0x80000000, EPU_EPGCR);
+		break;
+	default:
+		break;
+	}
 }
 #endif	/* CONFIG_SYS_FSL_ERRATUM_A009635 */
 
 static void erratum_a008751(void)
 {
 #ifdef CONFIG_SYS_FSL_ERRATUM_A008751
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+	unsigned int svr, ver;
 	u32 __iomem *scfg = (u32 __iomem *)SCFG_BASE;
-
-	writel(SCFG_USB3PRM1CR_INIT, scfg + SCFG_USB3PRM1CR / 4);
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
+	switch (ver) {
+	case SVR_LS2080:
+	case SVR_LS2085:
+	case SVR_LS2040:
+	case SVR_LS2045:
+		writel(0x27672b2a, scfg + SCFG_USB3PRM1CR / 4);
+		break;
+	default:
+		break;
+	}
 #endif
 }
 
