@@ -47,6 +47,9 @@ struct cpu_type {
 #define SVR_LS2080		0x870110
 #define SVR_LS2085		0x870100
 #define SVR_LS2040		0x870130
+#define SVR_LS1048		0x870320
+#define SVR_LS1084		0x870310
+#define SVR_LS1088		0x870300
 
 #define SVR_MAJ(svr)		(((svr) >> 4) & 0xf)
 #define SVR_MIN(svr)		(((svr) >> 0) & 0xf)
