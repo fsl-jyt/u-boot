@@ -583,6 +583,9 @@ The following options need to be configured:
 		CONFIG_SYS_FSL_HAS_CCN504
 		Defines the SoC has cache coherent interconnect CCN-504
 
+		CONFIG_SYS_FSL_HAS_CCI400
+		Defines the SoC has cache coherent interconnect CCN-400
+
 
 - Intel Monahans options:
 		CONFIG_SYS_MONAHANS_RUN_MODE_OSC_RATIO
