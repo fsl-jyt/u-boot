@@ -748,11 +748,26 @@ int fsl_esdhc_initialize(bd_t *bis, struct fsl_esdhc_cfg *cfg)
 int fsl_esdhc_mmc_init(bd_t *bis)
 {
 	struct fsl_esdhc_cfg *cfg;
+#ifdef CONFIG_FSL_ESDHC_TWO_CONTROLLERS_SUPPORT
+	struct fsl_esdhc_cfg *cfg_1;
+#endif
 
 	cfg = calloc(sizeof(struct fsl_esdhc_cfg), 1);
 	cfg->esdhc_base = CONFIG_SYS_FSL_ESDHC_ADDR;
 	cfg->sdhc_clk = gd->arch.sdhc_clk;
+#ifdef CONFIG_FSL_ESDHC_TWO_CONTROLLERS_SUPPORT
+	cfg_1 = calloc(sizeof(struct fsl_esdhc_cfg), 1);
+	cfg_1->esdhc_base = CONFIG_SYS_FSL_ESDHC_1_ADDR;
+	cfg_1->sdhc_clk = gd->arch.sdhc_clk;
+
+	if (fsl_esdhc_initialize(bis, cfg))
+		return -1;
+	if (fsl_esdhc_initialize(bis, cfg_1))
+		return -1;
+	return 0;
+#else
 	return fsl_esdhc_initialize(bis, cfg);
+#endif
 }
 
 #ifdef CONFIG_FSL_ESDHC_ADAPTER_IDENT
