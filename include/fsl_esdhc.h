@@ -175,6 +175,7 @@ struct fsl_esdhc_cfg {
 #endif
 	u32	sdhc_clk;
 	u8	max_bus_width;
+	bool	non_removable_card;
 	struct mmc_config cfg;
 };
 

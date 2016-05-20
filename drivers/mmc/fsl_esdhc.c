@@ -628,6 +628,8 @@ static int esdhc_getcd(struct mmc *mmc)
 	struct fsl_esdhc *regs = (struct fsl_esdhc *)cfg->esdhc_base;
 	int timeout = 1000;
 
+	if (cfg->non_removable_card)
+		return 1;
 #ifdef CONFIG_ESDHC_DETECT_QUIRK
 	if (CONFIG_ESDHC_DETECT_QUIRK)
 		return 1;
@@ -759,7 +761,9 @@ int fsl_esdhc_mmc_init(bd_t *bis)
 	cfg_1 = calloc(sizeof(struct fsl_esdhc_cfg), 1);
 	cfg_1->esdhc_base = CONFIG_SYS_FSL_ESDHC_1_ADDR;
 	cfg_1->sdhc_clk = gd->arch.sdhc_clk;
-
+#ifdef CONFIG_FSL_ESDHC_1_NON_REMOVABLE_CARD
+	cfg_1->non_removable_card = true;
+#endif
 	if (fsl_esdhc_initialize(bis, cfg))
 		return -1;
 	if (fsl_esdhc_initialize(bis, cfg_1))
