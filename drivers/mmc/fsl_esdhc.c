@@ -444,6 +444,32 @@ esdhc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 #ifdef CONFIG_SYS_FSL_ESDHC_USE_PIO
 		esdhc_pio_read_write(mmc, data);
 #else
+#ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC_A009620
+		int timeout = 5000;
+		if (data->flags & MMC_DATA_WRITE) {
+			while (esdhc_read32(&regs->prsstat) & PRSSTAT_WTA)
+				;
+
+			/* Poll on DATA0 line for 500 ms */
+			while (!(esdhc_read32(&regs->prsstat) & PRSSTAT_DAT0)) {
+				udelay(100);
+				timeout--;
+				if (timeout <= 0) {
+					err = TIMEOUT;
+					break;
+				}
+			}
+			if (!err) {
+				esdhc_write32(&regs->sysctl,
+					      esdhc_read32(&regs->sysctl) |
+					      SYSCTL_RSTD);
+				while ((esdhc_read32(&regs->sysctl) &
+					SYSCTL_RSTD))
+					;
+			}
+			goto out;
+		}
+#endif
 		do {
 			irqstat = esdhc_read32(&regs->irqstat);
 
