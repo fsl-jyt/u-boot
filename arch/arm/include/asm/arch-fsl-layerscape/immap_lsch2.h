@@ -44,6 +44,7 @@
 #define CONFIG_SYS_PPFE_ADDR			(CONFIG_SYS_IMMR + 0x3000000)
 #define CONFIG_SYS_SEC_MON_ADDR			(CONFIG_SYS_IMMR + 0xe90000)
 #define CONFIG_SYS_SFP_ADDR			(CONFIG_SYS_IMMR + 0xe80200)
+#define CONFIG_SYS_GPIO1_ADDR			(CONFIG_SYS_IMMR + 0x300000)
 
 #define CONFIG_SYS_FSL_TIMER_ADDR		0x02b00000
 
@@ -649,6 +650,15 @@ struct ccsr_cci400 {
 	} pcounter[4];			/* Performance Counter */
 	u8 res_e004[0x10000 - 0xe004];
 };
+
+typedef struct ccsr_gpio {
+	u32	gpdir;
+	u32	gpodr;
+	u32	gpdat;
+	u32	gpier;
+	u32	gpimr;
+	u32	gpicr;
+} ccsr_gpio_t;
 
 /* MMU 500 */
 #define SMMU_SCR0			(SMMU_BASE + 0x0)
