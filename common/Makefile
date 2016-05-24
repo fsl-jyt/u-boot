@@ -63,6 +63,8 @@ ifdef CONFIG_CMD_USB
 obj-y += usb.o usb_hub.o
 obj-$(CONFIG_USB_STORAGE) += usb_storage.o
 endif
+obj-$(CONFIG_CMD_PFE_COMMANDS) += cmd_pfe_commands.o
+obj-$(CONFIG_CMD_PFE_COMMANDS) += cmd_gemac_stat.o
 
 # others
 obj-$(CONFIG_BOOTSTAGE) += bootstage.o
