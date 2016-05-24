@@ -211,11 +211,6 @@ int board_init(void)
 	return 0;
 }
 
-int board_eth_init(bd_t *bis)
-{
-	return pci_eth_init(bis);
-}
-
 #ifdef CONFIG_OF_BOARD_SETUP
 int ft_board_setup(void *blob, bd_t *bd)
 {

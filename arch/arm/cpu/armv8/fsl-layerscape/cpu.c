@@ -573,6 +573,11 @@ int cpu_eth_init(bd_t *bis)
 {
 	int error = 0;
 
+#if defined(CONFIG_FSL_PPFE) && !defined(CONFIG_CMD_PFE_START)
+	ls1012a_gemac_initialize(bis, 0 , "pfe_eth0");
+	ls1012a_gemac_initialize(bis, 1 , "pfe_eth1");
+#endif
+
 #ifdef CONFIG_FSL_MC_ENET
 	error = fsl_mc_ldpaa_init(bis);
 #endif

@@ -136,6 +136,8 @@ obj-$(CONFIG_CMD_MII) += cmd_mii.o
 ifdef CONFIG_PHYLIB
 obj-$(CONFIG_CMD_MII) += cmd_mdio.o
 endif
+obj-$(CONFIG_CMD_PFE_COMMANDS) += cmd_pfe_commands.o
+obj-$(CONFIG_CMD_PFE_COMMANDS) += cmd_gemac_stat.o
 obj-$(CONFIG_CMD_MISC) += cmd_misc.o
 obj-$(CONFIG_CMD_MMC) += cmd_mmc.o
 obj-$(CONFIG_CMD_MMC_SPI) += cmd_mmc_spi.o

@@ -19,10 +19,12 @@
 #define CONFIG_SYS_MEMTEST_START	0x80000000
 #define CONFIG_SYS_MEMTEST_END		0x9fffffff
 
+#ifdef CONFIG_FSL_PPFE
+#define EMAC1_PHY_ADDR          0x2
+#define EMAC2_PHY_ADDR          0x1
 #define CONFIG_PHYLIB
 #define CONFIG_PHY_REALTEK
-#define SGMII_PHY1_ADDR		0x0
-#define RGMII_PHY2_ADDR		0x1
+#endif
 
 /*
 * USB
