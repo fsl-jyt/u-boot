@@ -1009,6 +1009,9 @@ int spi_flash_scan(struct spi_flash *flash)
 	u8 idcode[5];
 	u8 cmd;
 	int ret;
+#ifdef CONFIG_SPI_FLASH_SPANSION
+	u8 id[6];
+#endif
 
 	/* Read the ID codes */
 	ret = spi_flash_cmd(spi, CMD_READ_ID, idcode, sizeof(idcode));
@@ -1062,7 +1065,6 @@ int spi_flash_scan(struct spi_flash *flash)
 	if ((jedec == 0x0219 || (jedec == 0x0220)) &&
 	    (ext_jedec & 0xff00) == 0x4d00) {
 		int ret;
-		u8 id[6];
 
 		/* Read the ID codes again, 6 bytes */
 		ret = spi_flash_cmd(flash->spi, CMD_READ_ID, id, sizeof(id));
@@ -1252,14 +1254,21 @@ int spi_flash_scan(struct spi_flash *flash)
 	puts("\n");
 #endif
 
+#ifdef CONFIG_SPI_FLASH_SPANSION
 #ifndef CONFIG_SPI_FLASH_BAR
-	if (((flash->dual_flash == SF_SINGLE_FLASH) &&
-	     (flash->size > SPI_FLASH_16MB_BOUN)) ||
-	     ((flash->dual_flash > SF_SINGLE_FLASH) &&
-	     (flash->size > SPI_FLASH_16MB_BOUN << 1))) {
+	if ((id[5] != 0x81) &&
+	    /*
+	     * Spansion FS-S family not support BAR ,
+	     * Even if CONFIG_SPI_FLASH_BAR is unable,
+	     * Need not the Warning prints */
+	    ((((flash->dual_flash == SF_SINGLE_FLASH) &&
+	    (flash->size > SPI_FLASH_16MB_BOUN))) ||
+	    ((flash->dual_flash > SF_SINGLE_FLASH) &&
+	    (flash->size > SPI_FLASH_16MB_BOUN << 1)))) {
 		puts("SF: Warning - Only lower 16MiB accessible,");
 		puts(" Full access #define CONFIG_SPI_FLASH_BAR\n");
 	}
+#endif
 #endif
 
 	return ret;
