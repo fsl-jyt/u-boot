@@ -19,6 +19,7 @@
 #include <asm/arch-fsl-layerscape/immap_lsch2.h>
 
 #define DEFAULT_PFE_MDIO_NAME "PFE_MDIO"
+#define DEFAULT_PFE_MDIO1_NAME "PFE_MDIO1"
 
 #define MASK_ETH_PHY_RST	0x00000100
 
@@ -70,6 +71,19 @@ int board_eth_init(bd_t *bis)
 		printf("Failed to register mdio \n");
 		return -1;
 	}
+
+	/*We don't really need this MDIO bus,
+	* this is called just to initialize EMAC2 MDIO interface*/
+	mac1_mdio_info.reg_base = (void *)0x04220000; /*EMAC2_BASE_ADDR*/
+	mac1_mdio_info.name = DEFAULT_PFE_MDIO1_NAME;
+
+	bus = ls1012a_mdio_init(&mac1_mdio_info);
+	if(!bus)
+	{
+		printf("Failed to register mdio \n");
+		return -1;
+	}
+
 
 	/*MAC1 */
 	ls1012a_set_mdio(0, miiphy_get_dev_by_name(DEFAULT_PFE_MDIO_NAME));

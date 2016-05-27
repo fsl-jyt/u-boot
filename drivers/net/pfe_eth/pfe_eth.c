@@ -348,7 +348,7 @@ static void ls1012a_configure_serdes(struct ls1012a_eth_dev *priv)
 
 	printf("%s %d\n", __func__, priv->gemac_port);
 	/* PCS configuration done with corresponding GEMAC */
-	bus.priv = priv->gem->gemac_base;
+	bus.priv = gem_info[priv->gemac_port].gemac_base;
 
 	ls1012a_phy_read(&bus, 0, MDIO_DEVAD_NONE, 0x0);
 	ls1012a_phy_read(&bus, 0, MDIO_DEVAD_NONE, 0x1);
