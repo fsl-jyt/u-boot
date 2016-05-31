@@ -50,7 +50,7 @@ extern void *ddr_base_addr;
 #define PFE_CBUS_PHYS_BASE_ADDR	0xc0000000	/**< CBUS physical base address as seen by PE's. */
 
 /* Host<->PFE Mapping */
-#define DDR_PFE_TO_VIRT(p)	((p ) + 0x80000000)
+#define DDR_PFE_TO_VIRT(p)	((unsigned long int)((p ) + 0x80000000))
 #define CBUS_VIRT_TO_PFE(v)	(((v) - CBUS_BASE_ADDR) + PFE_CBUS_PHYS_BASE_ADDR)
 #define CBUS_PFE_TO_VIRT(p)	(((p) - PFE_CBUS_PHYS_BASE_ADDR) + CBUS_BASE_ADDR)
 

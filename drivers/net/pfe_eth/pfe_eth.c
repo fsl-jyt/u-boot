@@ -53,10 +53,6 @@ static void ls1012a_gemac_disable(void *gemac_base)
         writel(readl(gemac_base + EMAC_ECNTRL_REG) & ~EMAC_ECNTRL_ETHER_EN, gemac_base + EMAC_ECNTRL_REG);	
 }
 
-static void ls1012a_gemac_set_mode(void *gemac_base, u32 mode)
-{
-}
-
 static void ls1012a_gemac_set_speed(void *gemac_base, u32 speed)
 {
 	struct ccsr_scfg *scfg = (struct ccsr_scfg *)CONFIG_SYS_FSL_SCFG_ADDR;
@@ -125,7 +121,6 @@ static int ls1012a_eth_init(struct eth_device *dev, bd_t * bd)
         struct ls1012a_eth_dev *priv = (struct ls1012a_eth_dev *)dev->priv;
         struct gemac_s *gem = priv->gem;
 	int speed;
-	int tmp;
 
         /* set ethernet mac address */
         ls1012a_gemac_set_ethaddr(gem->gemac_base, dev->enetaddr);
@@ -220,7 +215,7 @@ static int ls1012a_eth_recv(struct eth_device *dev)
         }
 
 	// Pass the packet up to the protocol layers.
-	net_process_received_packet((uchar *)pkt_buf, len);
+	net_process_received_packet((void *)(long int)pkt_buf, len);
 
 	return 0;
 }

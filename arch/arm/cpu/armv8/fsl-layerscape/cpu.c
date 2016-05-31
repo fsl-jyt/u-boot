@@ -20,6 +20,7 @@
 #include <fm_eth.h>
 #include <fsl_debug_server.h>
 #include <fsl-mc/fsl_mc.h>
+#include <pfe_eth.h>
 #ifdef CONFIG_FSL_ESDHC
 #include <fsl_esdhc.h>
 #endif

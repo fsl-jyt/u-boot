@@ -27,8 +27,6 @@
 
 #define DEFAULT_PFE_MDIO_NAME "PFE_MDIO"
 
-static int mdio_mux[NUM_FM_PORTS];
-
 static const char * const mdio_names[] = {
 	"NULL",
 	"LS1012AQDS_MDIO_RGMII",
@@ -85,6 +83,8 @@ static int ls1012aqds_mdio_reset(struct mii_dev *bus)
 
 	if(priv->realbus->reset)
 		return priv->realbus->reset(priv->realbus);
+	else
+		return -1;
 }
 
 static int ls1012aqds_mdio_init(char *realbusname, u8 muxval)

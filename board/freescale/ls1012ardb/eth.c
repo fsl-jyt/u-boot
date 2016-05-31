@@ -17,6 +17,7 @@
 
 #include "../../../drivers/net/pfe_eth/pfe_eth.h"
 #include <asm/arch-fsl-layerscape/immap_lsch2.h>
+#include <i2c.h>
 
 #define DEFAULT_PFE_MDIO_NAME "PFE_MDIO"
 

@@ -45,7 +45,7 @@ int pfe_load_elf(int pe_mask, const struct firmware *fw)
 	printf("%s: no of sections: %d\n", __func__, sections);
 
 	/* Some sanity checks */
-	if (strncmp(&elf_hdr->e_ident[EI_MAG0], ELFMAG, SELFMAG))
+	if (strncmp((char *)&elf_hdr->e_ident[EI_MAG0], ELFMAG, SELFMAG))
 	{
 		printf("%s: incorrect elf magic number\n", __func__);
 		return -1;

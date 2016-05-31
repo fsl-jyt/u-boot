@@ -26,6 +26,7 @@
 
 
 #include "pfe_driver.h"
+#include <phy.h>
 
 #ifndef SZ_1K
 #define SZ_1K 1024
@@ -151,7 +152,10 @@ struct firmware {
 
 int pfe_probe(struct pfe *pfe);
 int pfe_remove(struct pfe *pfe);
-
+struct mii_dev *ls1012a_mdio_init(struct mdio_info *mdio_info);
+void ls1012a_set_mdio(int dev_id, struct mii_dev *bus);
+void ls1012a_set_phy_address_mode(int dev_id, int phy_id, int phy_mode);
+int ls1012a_gemac_initialize(bd_t * bis, int dev_id, char *devname);
 
 //#define dprint(fmt, arg...)	printf(fmt, ##arg)
 #define dprint(fmt, arg...)
