@@ -87,7 +87,7 @@ int pfe_recv(unsigned int *pkt_ptr, int *phy_port)
 	}
 #endif
 
-	*pkt_ptr = (unsigned int )(hif_header + 1);
+	*pkt_ptr = (unsigned long)(hif_header + 1);
 	*phy_port = hif_header->port_no;
 	len -= sizeof(struct hif_header_s);
 
@@ -174,7 +174,7 @@ int pfe_send(int phy_port, void *data, int length)
 		length = MIN_PKT_SIZE;
 	}
 
-	tx_buf_va = (u8 *)DDR_PFE_TO_VIRT(bd->data);
+	tx_buf_va = (void *)DDR_PFE_TO_VIRT(bd->data);
 	dprint("%s: tx_buf_va: %p, tx_buf_pa: %08x\n", __func__, tx_buf_va, bd->data);
 
 	/* Fill the gemac/phy port number to send this packet out */
@@ -388,7 +388,7 @@ static int hif_rx_desc_init(struct pfe *pfe)
 	ctrl = (MAX_FRAME_SIZE | BD_CTRL_DESC_EN | BD_CTRL_DIR | BD_CTRL_LIFM);
 #endif
 	for (i=0; i < rx_desc->rxRingSize; i++) {
-		bd_va->next = (u32 )(bd_pa + 1);
+		bd_va->next = (unsigned long)(bd_pa + 1);
 		bd_va->ctrl = ctrl;
 		bd_va->data = rx_buf_pa + (i * MAX_FRAME_SIZE);
 //		printf("status: %08x, ctrl: %08x, data: %08x, next: %p\n",
@@ -476,7 +476,7 @@ static int hif_tx_desc_init(struct pfe *pfe)
 	tx_buf_pa = pfe->ddr_phys_baseaddr + HIF_TX_PKT_DDR_BASEADDR;
 
 	for (i=0; i < tx_desc->txRingSize; i++) {
-		bd_va->next = (u32 )(bd_pa + 1);
+		bd_va->next = (unsigned long)(bd_pa + 1);
 		bd_va->data = tx_buf_pa + (i * MAX_FRAME_SIZE);
 //		printf("status: %08x, ctrl: %08x, data: %08x, next: %p\n",
 //			bd_va->status, bd_va->ctrl, bd_va->data, bd_va->next);

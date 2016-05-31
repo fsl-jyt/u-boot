@@ -368,6 +368,7 @@ void pe_lmem_write(u32 *src, u32 len, u32 offset)
 		class_bus_write(*src, PE_LMEM_BASE_ADDR + offset, (len & 0x03));
 }
 
+#if !defined(CONFIG_UTIL_PE_DISABLED)
 /** Writes UTIL program memory (DDR) from the host.
  *
  * @param[in] addr	Address to write (virtual, must be aligned on size)
@@ -413,7 +414,7 @@ static void util_pmem_memcpy(void *dst, const void *src, unsigned int len)
 	if (len & 0x2)
 		util_pmem_write(*(u16 *)src, dst, len & 0x2);
 }
-
+#endif
 
 /** Loads an elf section into pmem
  * Code needs to be at least 16bit aligned and only PROGBITS sections are supported
@@ -581,7 +582,7 @@ static int pe_load_ddr_section(int id, const void *data, Elf32_Shdr *shdr)
 						return -1;
 					}
 
-					memcpy(DDR_PFE_TO_VIRT(addr), data + offset, size);
+					memcpy((void *)DDR_PFE_TO_VIRT(addr), data + offset, size);
 				}
 			}
 
@@ -620,7 +621,7 @@ static int pe_load_ddr_section(int id, const void *data, Elf32_Shdr *shdr)
 		}
 		else
 		{
-			memcpy(DDR_PFE_TO_VIRT(addr), data + offset, size);
+			memcpy((void *)DDR_PFE_TO_VIRT(addr), data + offset, size);
 		}
 
 		break;
