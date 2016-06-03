@@ -95,7 +95,8 @@ dtb-$(CONFIG_FSL_LSCH3) += fsl-ls2080a-qds.dtb \
 	fsl-ls2088a-qds.dtb \
 	fsl-ls2088a-rdb.dtb
 
-itb-$(CONFIG_FSL_LSCH3) += fsl-lsch3-qds.itb
+itb-$(CONFIG_FSL_LSCH3) += fsl-lsch3-qds.itb \
+	fsl-lsch3-rdb.itb
 
 dtb-$(CONFIG_FSL_LSCH2) += fsl-ls1043a-qds-duart.dtb \
 	fsl-ls1043a-qds-lpuart.dtb \
