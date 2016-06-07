@@ -736,8 +736,7 @@ static int dpio_init(void)
 	p_des.cinh_bar = (void *)(SOC_QBMAN_PORTALS_BASE_ADDR
 					+ attr.qbman_portal_ci_offset);
 
-	dflt_dpio->sw_portal = qbman_swp_init(&p_des, attr.version.major,
-					      attr.version.minor);
+	dflt_dpio->sw_portal = qbman_swp_init(&p_des);
 	if (dflt_dpio->sw_portal == NULL) {
 		printf("qbman_swp_init() failed\n");
 		goto err_get_swp_init;

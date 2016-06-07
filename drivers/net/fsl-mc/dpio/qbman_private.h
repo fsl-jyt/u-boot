@@ -11,6 +11,7 @@
 #include <linux/types.h>
 #include <asm/atomic.h>
 #include <malloc.h>
+#include <asm/arch/soc.h>
 #include <fsl-mc/fsl_qbman_base.h>
 
 #define QBMAN_CHECKING
@@ -165,5 +166,39 @@ static inline void dcbz(void *ptr)
 }
 
 #define lwsync()
+
+void qbman_version(u32 *major, u32 *minor)
+{
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+	u32 svr, ver;
+
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
+
+	switch (ver) {
+	case SVR_LS2080:
+	case SVR_LS2040:
+	case SVR_LS2085:
+	case SVR_LS2045:
+		*major = 4;
+		*minor = 0;
+		break;
+
+	case SVR_LS2088:
+	case SVR_LS2084:
+	case SVR_LS2048:
+	case SVR_LS2044:
+	case SVR_LS1048:
+	case SVR_LS1084:
+	case SVR_LS1088:
+		*major = 4;
+		*minor = 1;
+	break;
+
+	default:
+		printf("%s: Unknown SoC\n", __func__);
+		break;
+	}
+}
 
 #include "qbman_sys.h"

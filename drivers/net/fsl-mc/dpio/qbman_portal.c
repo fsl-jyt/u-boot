@@ -25,7 +25,7 @@
 #define QBMAN_CENA_SWP_VDQCR   0x780
 
 /* Reverse mapping of QBMAN_CENA_SWP_DQRR() */
-#define QBMAN_IDX_FROM_DQRR(p) (((unsigned long)p & 0xff) >> 6)
+#define QBMAN_IDX_FROM_DQRR(p) (((unsigned long)p & 0x1ff) >> 6)
 
 /*******************************/
 /* Pre-defined attribute codes */
@@ -43,6 +43,7 @@ struct qb_attr_code code_generic_rslt = QB_CODE(0, 8, 8);
 struct qb_attr_code code_sdqcr_dct = QB_CODE(0, 24, 2);
 struct qb_attr_code code_sdqcr_fc = QB_CODE(0, 29, 1);
 struct qb_attr_code code_sdqcr_tok = QB_CODE(0, 16, 8);
+static struct qb_attr_code code_eq_dca_idx;
 #define CODE_SDQCR_DQSRC(n) QB_CODE(0, n, 1)
 enum qbman_sdqcr_dct {
 	qbman_sdqcr_dct_null = 0,
@@ -61,11 +62,11 @@ enum qbman_sdqcr_fc {
 
 /* Software portals should always be in the power-on state when we initialise,
  * due to the CCSR-based portal reset functionality that MC has. */
-struct qbman_swp *qbman_swp_init(const struct qbman_swp_desc *d, uint16_t
-				 major, uint16_t minor)
+struct qbman_swp *qbman_swp_init(const struct qbman_swp_desc *d)
 {
 	int ret;
 	struct qbman_swp *p = malloc(sizeof(struct qbman_swp));
+	u32 major = 0, minor = 0;
 
 	if (!p)
 		return NULL;
@@ -82,11 +83,23 @@ struct qbman_swp *qbman_swp_init(const struct qbman_swp_desc *d, uint16_t
 	p->vdq.valid_bit = QB_VALID_BIT;
 	p->dqrr.next_idx = 0;
 
-	if (major >=4 && minor >=1)
+	qbman_version(&major, &minor);
+	if (!major) {
+		printf("invalid qbman version\n");
+		return NULL;
+	}
+
+	if (major >= 4 && minor >= 1) {
 		p->dqrr.dqrr_size = 8;
-	else
+
+		/* Set size of DQRR to 8, encoded in 3 bits */
+		code_eq_dca_idx = (struct qb_attr_code)QB_CODE(0, 8, 3);
+	} else {
 		p->dqrr.dqrr_size = 4;
 
+		/* Set size of DQRR to 4, encoded in 2 bits */
+		code_eq_dca_idx = (struct qb_attr_code)QB_CODE(0, 8, 2);
+	}
 
 	p->dqrr.valid_bit = QB_VALID_BIT;
 	ret = qbman_swp_sys_init(&p->sys, d, p->dqrr.dqrr_size);

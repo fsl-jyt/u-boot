@@ -11,8 +11,7 @@
 
 /* Create and destroy a functional object representing the given QBMan portal
  * descriptor. */
-struct qbman_swp *qbman_swp_init(const struct qbman_swp_desc *, uint16_t
-				 major, uint16_t minor);
+struct qbman_swp *qbman_swp_init(const struct qbman_swp_desc *);
 
 	/************/
 	/* Dequeues */
