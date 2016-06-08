@@ -77,6 +77,7 @@ void unpack_packed_dtb(void)
                 case SVR_LS2048:
                 case SVR_LS2044:
                         noffset = fit_image_get_node(fit, "ls2088a");
+			break;
                 default:
                         hang();
         }
