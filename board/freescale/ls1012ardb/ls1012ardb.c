@@ -88,7 +88,7 @@ void mmdc_init(void)
 	out_be32(&mmdc->mdcfg2, 0x01ff00db);
 
 	/* other parms	*/
-	out_be32(&mmdc->mdmisc,    0x00000680);
+	out_be32(&mmdc->mdmisc,    0x00001680);
 	out_be32(&mmdc->mpmur0,    0x00000800);
 	out_be32(&mmdc->mdrwd,     0x00002000);
 	out_be32(&mmdc->mpodtctrl, 0x0000022a);
@@ -148,7 +148,7 @@ void mmdc_init(void)
 	out_be32(&mmdc->mapsr, 0x00001067);
 
 	/* refresh scheme */
-	set_wait_for_bits_clear(&mmdc->mdref, 0x103e8000, 0x00000001);
+	set_wait_for_bits_clear(&mmdc->mdref, 0x0f3c8000, 0x00000001);
 
 	/* disable CON_REQ */
 	out_be32(&mmdc->mdscr, 0x0);
