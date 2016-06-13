@@ -1,3 +1,8 @@
+/*
+* Copyright (C) 2016 Freescale Semiconductor Inc.
+*
+* SPDX-License-Identifier:GPL-2.0+
+*/
 #ifndef _PE_H_
 #define _PE_H_
 

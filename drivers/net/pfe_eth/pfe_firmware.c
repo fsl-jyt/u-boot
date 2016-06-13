@@ -1,4 +1,8 @@
-
+/*
+* Copyright (C) 2016 Freescale Semiconductor Inc.
+*
+* SPDX-License-Identifier:GPL-2.0+
+*/
 
 /** @file
  *  Contains all the functions to handle parsing and loading of PE firmware files.
