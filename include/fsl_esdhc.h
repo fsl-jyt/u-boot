@@ -176,6 +176,9 @@ struct fsl_esdhc_cfg {
 	u32	sdhc_clk;
 	u8	max_bus_width;
 	struct mmc_config cfg;
+#ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC111
+	int rw_err;
+#endif
 };
 
 /* Select the correct accessors depending on endianess */

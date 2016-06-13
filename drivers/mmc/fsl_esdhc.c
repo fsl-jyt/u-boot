@@ -327,8 +327,12 @@ esdhc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 	volatile struct fsl_esdhc *regs = (struct fsl_esdhc *)cfg->esdhc_base;
 
 #ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC111
-	if (cmd->cmdidx == MMC_CMD_STOP_TRANSMISSION)
-		return 0;
+	if (cmd->cmdidx == MMC_CMD_STOP_TRANSMISSION) {
+		if (cfg->rw_err)
+			cfg->rw_err = 0;
+		else
+			return 0;
+	}
 #endif
 
 	esdhc_write32(&regs->irqstat, -1);
@@ -479,6 +483,13 @@ out:
 			while ((esdhc_read32(&regs->sysctl) & SYSCTL_RSTD))
 				;
 		}
+#ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC111
+		if (cmd->cmdidx == MMC_CMD_READ_SINGLE_BLOCK ||
+		    cmd->cmdidx == MMC_CMD_READ_MULTIPLE_BLOCK ||
+		    cmd->cmdidx == MMC_CMD_WRITE_SINGLE_BLOCK ||
+		    cmd->cmdidx == MMC_CMD_WRITE_MULTIPLE_BLOCK)
+			cfg->rw_err = 1;
+#endif
 
 		/* If this was CMD11, then notify that power cycle is needed */
 		if (cmd->cmdidx == SD_CMD_SWITCH_UHS18V)
@@ -760,6 +771,9 @@ int fsl_esdhc_mmc_init(bd_t *bis)
 	cfg = calloc(sizeof(struct fsl_esdhc_cfg), 1);
 	cfg->esdhc_base = CONFIG_SYS_FSL_ESDHC_ADDR;
 	cfg->sdhc_clk = gd->arch.sdhc_clk;
+#ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC111
+	cfg->rw_err = 0;
+#endif
 	return fsl_esdhc_initialize(bis, cfg);
 }
 
