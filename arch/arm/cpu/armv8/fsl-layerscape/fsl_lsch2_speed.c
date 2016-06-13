@@ -92,9 +92,10 @@ void get_sys_info(struct sys_info *sys_info)
 			freq_c_pll[cplx_pll] / core_cplx_pll_div[c_pll_sel];
 	}
 
-	if (ver == SVR_LS1012)
+	if (ver == SVR_LS1012){
 		sys_info->freq_systembus = sys_info->freq_ddrbus / 2;
-
+		sys_info->freq_ddrbus *=2;
+	}
 #define HWA_CGA_M1_CLK_SEL	0xe0000000
 #define HWA_CGA_M1_CLK_SHIFT	29
 #ifdef CONFIG_SYS_DPAA_FMAN
