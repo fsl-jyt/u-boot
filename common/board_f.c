@@ -824,11 +824,13 @@ static init_fnc_t init_sequence_f[] = {
 #if defined(CONFIG_X86) && defined(CONFIG_HAVE_FSP)
 	x86_fsp_init,
 #endif
+#ifndef CONFIG_SPL
 	arch_cpu_init,		/* basic arch cpu dependent setup */
+#endif
 	initf_dm,
 	arch_cpu_init_dm,
 	mark_bootstage,		/* need timer, go after init dm */
-#if defined(CONFIG_BOARD_EARLY_INIT_F)
+#if defined(CONFIG_BOARD_EARLY_INIT_F) && !defined(CONFIG_SPL)
 	board_early_init_f,
 #endif
 	/* TODO: can any of this go into arch_cpu_init()? */
@@ -841,9 +843,9 @@ static init_fnc_t init_sequence_f[] = {
 	/* TODO: can we rename this to timer_init()? */
 	init_timebase,
 #endif
-#if defined(CONFIG_ARM) || defined(CONFIG_MIPS) || \
+#if (defined(CONFIG_ARM) || defined(CONFIG_MIPS) || \
 		defined(CONFIG_BLACKFIN) || defined(CONFIG_NDS32) || \
-		defined(CONFIG_SPARC)
+		defined(CONFIG_SPARC)) && !defined (CONFIG_SPL)
 	timer_init,		/* initialize timer */
 #endif
 #ifdef CONFIG_SYS_ALLOC_DPRAM
