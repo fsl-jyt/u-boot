@@ -161,6 +161,17 @@ int select_i2c_ch_pca9547(u8 ch)
 	return 0;
 }
 
+int mmc_check_sdhc2_card(void)
+{
+	u8 card_id;
+
+	card_id = (QIXIS_READ(present2) & 0xe0) >> 5;
+	if (card_id == 0x7)
+		return 0;
+	else
+		return 1;
+}
+
 int dram_init(void)
 {
 	mmdc_init();

@@ -774,6 +774,11 @@ int fsl_esdhc_mmc_init(bd_t *bis)
 #endif
 }
 
+__weak int mmc_check_sdhc2_card(void)
+{
+	return 1;
+}
+
 #ifdef CONFIG_FSL_ESDHC_ADAPTER_IDENT
 void mmc_adapter_card_type_ident(void)
 {
@@ -817,6 +822,7 @@ void mmc_adapter_card_type_ident(void)
 void fdt_fixup_esdhc(void *blob, bd_t *bd)
 {
 	const char *compat = "fsl,esdhc";
+	const char *compat1 = "fsl,ls1012a-esdhc1";
 
 #ifdef CONFIG_FSL_ESDHC_PIN_MUX
 	if (!hwconfig("esdhc")) {
@@ -839,5 +845,8 @@ void fdt_fixup_esdhc(void *blob, bd_t *bd)
 #endif
 	do_fixup_by_compat(blob, compat, "status", "okay",
 			   4 + 1, 1);
+	if (!mmc_check_sdhc2_card())
+		do_fixup_by_compat(blob, compat1, "status", "disabled",
+				   4 + 1, 1);
 }
 #endif
