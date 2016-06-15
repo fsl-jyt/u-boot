@@ -171,6 +171,30 @@ int board_early_init_f(void)
 	return 0;
 }
 
+int mmc_check_sdhc2_card(void)
+{
+	u8 io = 0;
+	u8 is_card = 0;
+
+	/* Initialize i2c early for Serial flash bank information */
+	i2c_set_bus_num(0);
+
+	if (i2c_read(I2C_MUX_IO1_ADDR, 0, 1, &io, 1) < 0) {
+		printf("Error reading i2c boot information!\n");
+		return 0; /* Don't want to hang() on this error */
+	}
+
+	io = io & 0x0c;
+
+	switch (io) {
+	case 0:
+	case 8:
+		is_card = 1;
+	}
+
+	return is_card;
+}
+
 int board_init(void)
 {
 	struct ccsr_cci400 *cci = (struct ccsr_cci400 *)CONFIG_SYS_CCI400_ADDR;
