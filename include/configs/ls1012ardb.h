@@ -9,6 +9,15 @@
 
 #include "ls1012a_common.h"
 
+#define CONFIG_FSL_LS_PPA
+#if defined(CONFIG_FSL_LS_PPA)
+#define CONFIG_SYS_LS_PPA_DRAM_BLOCK_MIN_SIZE		(1UL * 1024 * 1024)
+
+#define CONFIG_SYS_LS_PPA_FW_IN_XIP
+#ifdef CONFIG_SYS_LS_PPA_FW_IN_XIP
+#define	CONFIG_SYS_LS_PPA_FW_ADDR	0x40500000
+#endif
+#endif
 
 #define CONFIG_DIMM_SLOTS_PER_CTLR	1
 #define CONFIG_CHIP_SELECTS_PER_CTRL	1

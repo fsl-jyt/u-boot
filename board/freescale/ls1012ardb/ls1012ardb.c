@@ -198,6 +198,9 @@ int mmc_check_sdhc2_card(void)
 int board_init(void)
 {
 	struct ccsr_cci400 *cci = (struct ccsr_cci400 *)CONFIG_SYS_CCI400_ADDR;
+#ifdef CONFIG_FSL_LS_PPA
+	u64 ppa_entry;
+#endif
 	/*
 	 * Set CCI-400 control override register to enable barrier
 	 * transaction
@@ -214,6 +217,13 @@ int board_init(void)
 
 #ifdef CONFIG_FSL_CAAM
 	sec_init();
+#endif
+
+#ifdef CONFIG_FSL_LS_PPA
+	ppa_init_pre(&ppa_entry);
+
+	if (ppa_entry)
+		ppa_init_entry((void *)ppa_entry);
 #endif
 
 	return 0;
