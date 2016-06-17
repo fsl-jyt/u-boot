@@ -184,6 +184,11 @@
 #define CONFIG_CMD_BOOTZ
 #define CONFIG_CMDLINE_TAG
 
+/* Used by SCSI, MMC and USB */
+#define CONFIG_CMD_FAT
+#define CONFIG_DOS_PARTITION
+#define CONFIG_CMD_EXT2
+
 #include <asm/fsl_secure_boot.h>
 
 #endif /* __LS1012A_COMMON_H */
