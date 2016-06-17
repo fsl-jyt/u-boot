@@ -136,12 +136,21 @@ void get_sys_info(struct sys_info *sys_info)
 int get_clocks(void)
 {
 	struct sys_info sys_info;
+#if defined(CONFIG_LS1088A) && defined(CONFIG_EMU) && defined(CONFIG_SD_BOOT)
+	gd->cpu_clk = 1600000000;
+	gd->bus_clk = 700000000;
+	gd->mem_clk = 2133000000;
+#ifdef CONFIG_SYS_FSL_HAS_DP_DDR
+	gd->arch.mem2_clk = 2133000000;
+#endif
+#else
 	get_sys_info(&sys_info);
 	gd->cpu_clk = sys_info.freq_processor[0];
 	gd->bus_clk = sys_info.freq_systembus;
 	gd->mem_clk = sys_info.freq_ddrbus;
 #ifdef CONFIG_SYS_FSL_HAS_DP_DDR
 	gd->arch.mem2_clk = sys_info.freq_ddrbus2;
+#endif
 #endif
 #if defined(CONFIG_FSL_ESDHC)
 	gd->arch.sdhc_clk = gd->bus_clk / 2;
