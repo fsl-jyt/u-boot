@@ -275,10 +275,12 @@ int spl_mmc_load_image(u32 boot_device)
 				return err;
 		}
 
+#if !(defined(CONFIG_LS1088A) && defined(CONFIG_EMU) && defined(CONFIG_SD_BOOT))
 		err = mmc_load_image_raw_partition(mmc,
 			CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_PARTITION);
 		if (!err)
 			return err;
+#endif
 #if defined(CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR)
 		err = mmc_load_image_raw_sector(mmc,
 			CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR);
