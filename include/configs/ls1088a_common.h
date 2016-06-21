@@ -29,7 +29,11 @@
 #ifdef CONFIG_SPL
 #define CONFIG_SYS_TEXT_BASE		0x80400000
 #else
+#ifdef CONFIG_QSPI_BOOT
+#define CONFIG_SYS_TEXT_BASE            0x20100000
+#else
 #define CONFIG_SYS_TEXT_BASE		0x30100000
+#endif
 #endif
 
 #define CONFIG_SUPPORT_RAW_INITRD
