@@ -90,6 +90,10 @@ found:
 	/* Enable ZQ calibration */
 	popts->zq_en = 1;
 
+	/* Enable DDR hashing */
+	popts->addr_hash = 1;
+
+
 	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_80ohm);
 	popts->ddr_cdr2 = DDR_CDR2_ODT(DDR_CDR_ODT_80ohm) |
 			  DDR_CDR2_VREF_OVRD(70);	/* Vref = 70% */
