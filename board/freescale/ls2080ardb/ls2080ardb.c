@@ -57,7 +57,7 @@ int checkboard(void)
 {
 	u8 sw;
 
-	printf("Board: LS2085A-RDB, ");
+	printf("Board: LS2085A/LS2088A-RDB, ");
 
 	sw = QIXIS_READ(arch);
 	printf("Board Arch: V%d, ", sw >> 4);
