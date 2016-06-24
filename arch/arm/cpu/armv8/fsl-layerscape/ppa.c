@@ -163,7 +163,7 @@ static int ppa_parse_firmware_fit_image(const void **raw_image_addr,
 	void *ppa_addr;
 	int ret;
 
-#ifdef CONFIG_SYS_LS_PPA_FW_IN_NOR
+#ifdef CONFIG_SYS_LS_PPA_FW_IN_XIP
 	ppa_addr = (void *)CONFIG_SYS_LS_PPA_FW_ADDR;
 #else
 #error "No CONFIG_SYS_LS_PPA_FW_IN_xxx defined"
@@ -197,7 +197,7 @@ int sec_firmware_validate(void)
 {
 	void *ppa_addr;
 
-#ifdef CONFIG_SYS_LS_PPA_FW_IN_NOR
+#ifdef CONFIG_SYS_LS_PPA_FW_IN_XIP
 	ppa_addr = (void *)CONFIG_SYS_LS_PPA_FW_ADDR;
 #else
 #error "No CONFIG_SYS_LS_PPA_FW_IN_xxx defined"
