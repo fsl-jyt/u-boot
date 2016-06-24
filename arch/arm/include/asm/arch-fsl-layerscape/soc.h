@@ -60,6 +60,13 @@ struct cpu_type {
 #define AHCI_PORT_PHY_3_CFG    0x0e081509
 #define AHCI_PORT_TRANS_CFG    0x08000029
 
+#define LS1012A_PORT_PHY1	0xa003fffe
+#define LS1012A_PORT_PHY2	0x28184d1b
+#define LS1012A_PORT_PHY3	0x0e081906
+#define LS1012A_PORT_PHY4	0x064a0813
+#define LS1012A_PORT_PHY5	0x3ffc96a4
+#define LS1012A_PORT_TRANS	0x08000029
+
 /* AHCI (sata) register map */
 struct ccsr_ahci {
 	u32 res1[0xa4/4];	/* 0x0 - 0xa4 */

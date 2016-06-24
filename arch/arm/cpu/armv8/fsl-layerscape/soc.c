@@ -328,10 +328,19 @@ int sata_init(void)
 {
 	struct ccsr_ahci __iomem *ccsr_ahci = (void *)CONFIG_SYS_SATA;
 
+#if defined(CONFIG_LS1043A)
 	out_le32(&ccsr_ahci->ppcfg, AHCI_PORT_PHY_1_CFG);
 	out_le32(&ccsr_ahci->pp2c, AHCI_PORT_PHY_2_CFG);
 	out_le32(&ccsr_ahci->pp3c, AHCI_PORT_PHY_3_CFG);
 	out_le32(&ccsr_ahci->ptc, AHCI_PORT_TRANS_CFG);
+#elif defined(CONFIG_LS1012A)
+	out_le32(&ccsr_ahci->ppcfg, LS1012A_PORT_PHY1);
+	out_le32(&ccsr_ahci->pp2c, LS1012A_PORT_PHY2);
+	out_le32(&ccsr_ahci->pp3c, LS1012A_PORT_PHY3);
+	out_le32(&ccsr_ahci->pp4c, LS1012A_PORT_PHY4);
+	out_le32(&ccsr_ahci->pp5c, LS1012A_PORT_PHY5);
+	out_le32(&ccsr_ahci->ptc, LS1012A_PORT_TRANS);
+#endif
 
 	ahci_init((void __iomem *)CONFIG_SYS_SATA);
 	scsi_scan(0);
