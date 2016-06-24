@@ -450,7 +450,7 @@ struct ccsr_scfg {
 	u32 pfebsbcr;
 	u8 res_460[0x484-0x460];
 	u32 mdioselcr;
-	u8 res_468[0x600-0x468];
+	u8 res_488[0x600-0x488];
 	u32 scratchrw[4];
 	u8 res_610[0x680-0x610];
 	u32 corebcr;
