@@ -59,4 +59,20 @@
 #define CONFIG_SYS_MEMTEST_START	0x80000000
 #define CONFIG_SYS_MEMTEST_END		0x9fffffff
 
+#undef CONFIG_EXTRA_ENV_SETTINGS
+#define CONFIG_EXTRA_ENV_SETTINGS		\
+	"initrd_high=0xffffffff\0"		\
+	"verify=no\0"				\
+	"hwconfig=fsl_ddr:bank_intlv=auto\0"	\
+	"loadaddr=0x80100000\0"			\
+	"kernel_addr=0x100000\0"		\
+	"ramdisk_addr=0x800000\0"		\
+	"ramdisk_size=0x2000000\0"		\
+	"fdt_high=0xffffffffffffffff\0"		\
+	"initrd_high=0xffffffffffffffff\0"	\
+	"kernel_start=0xa00000\0"		\
+	"kernel_load=0x96000000\0"		\
+	"kernel_size=0x2800000\0"		\
+	"console=ttyAMA0,38400n8\0"
+
 #endif /* __LS1012ARDB_H__ */
