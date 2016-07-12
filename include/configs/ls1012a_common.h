@@ -68,6 +68,7 @@
 #define FSL_QSPI_FLASH_SIZE		(1 << 26)
 #define FSL_QSPI_FLASH_NUM		2
 #define CONFIG_SYS_FSL_QSPI_AHB
+#define CONFIG_SYS_FSL_ERRATUM_A009282
 
 /*
  * Environment
