@@ -335,6 +335,8 @@ static inline void final_mmu_setup(void)
 			  CONFIG_SYS_FSL_QBMAN_BASE >> SECTION_SHIFT_L1,
 			  level2_table2);
 #endif
+	/* fix the final_mmu_table before filling in the block entries */
+	fix_final_mmu_table();
 
 	/* Find the table and fill in the block entries */
 	for (i = 0; i < ARRAY_SIZE(final_mmu_table); i++) {
@@ -709,4 +711,47 @@ phys_size_t board_reserve_ram_top(phys_size_t ram_size)
 #endif
 
 	return ram_top;
+}
+
+void fix_final_mmu_table(void)
+{
+#if defined(CONFIG_LS2080A) || defined(CONFIG_LS2085A)
+	unsigned int i;
+	u32 svr, ver;
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
+
+	/* Fix PCIE base and size for LS2088A */
+	if ((ver == SVR_LS2088) || (ver == SVR_LS2084) ||
+	   (ver == SVR_LS2048) || (ver == SVR_LS2044)) {
+		for (i = 0; i < ARRAY_SIZE(final_mmu_table); i++) {
+			switch (final_mmu_table[i].phys_addr) {
+			case CONFIG_SYS_PCIE1_PHYS_ADDR:
+				final_mmu_table[i].phys_addr = 0x2000000000ULL;
+				final_mmu_table[i].virt_addr = 0x2000000000ULL;
+				final_mmu_table[i].size = 0x800000000ULL;
+				break;
+			case CONFIG_SYS_PCIE2_PHYS_ADDR:
+				final_mmu_table[i].phys_addr = 0x2800000000ULL;
+				final_mmu_table[i].virt_addr = 0x2800000000ULL;
+				final_mmu_table[i].size = 0x800000000ULL;
+				break;
+			case CONFIG_SYS_PCIE3_PHYS_ADDR:
+				final_mmu_table[i].phys_addr = 0x3000000000ULL;
+				final_mmu_table[i].virt_addr = 0x3000000000ULL;
+				final_mmu_table[i].size = 0x800000000ULL;
+				break;
+			case CONFIG_SYS_PCIE4_PHYS_ADDR:
+				final_mmu_table[i].phys_addr = 0x3800000000ULL;
+				final_mmu_table[i].virt_addr = 0x3800000000ULL;
+				final_mmu_table[i].size = 0x800000000ULL;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+#endif
 }
