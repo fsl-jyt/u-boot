@@ -112,23 +112,28 @@ struct ls_pcie_info {
 	u64 io_size;
 };
 
-#define SET_LS_PCIE_INFO(x, num)			\
+#define CONFIG_SYS_PCIE1_LS2088A_PHYS_ADDR	0x2000000000ULL
+#define CONFIG_SYS_PCIE2_LS2088A_PHYS_ADDR	0x2800000000ULL
+#define CONFIG_SYS_PCIE3_LS2088A_PHYS_ADDR	0x3000000000ULL
+#define CONFIG_SYS_PCIE4_LS2088A_PHYS_ADDR	0x3800000000ULL
+
+#define SET_LS_PCIE_INFO(x, num, ...)			\
 {							\
 	x.regs = CONFIG_SYS_PCIE##num##_ADDR;		\
-	x.phys_base = CONFIG_SYS_PCIE##num##_PHYS_ADDR;	\
+	x.phys_base = CONFIG_SYS_PCIE##num##__VA_ARGS__##_PHYS_ADDR;	\
 	x.cfg0_phys = CONFIG_SYS_PCIE_CFG0_PHYS_OFF +	\
-		      CONFIG_SYS_PCIE##num##_PHYS_ADDR;	\
+		      CONFIG_SYS_PCIE##num##__VA_ARGS__##_PHYS_ADDR;	\
 	x.cfg0_size = CONFIG_SYS_PCIE_CFG0_SIZE;	\
 	x.cfg1_phys = CONFIG_SYS_PCIE_CFG1_PHYS_OFF +	\
-		      CONFIG_SYS_PCIE##num##_PHYS_ADDR;	\
+		      CONFIG_SYS_PCIE##num##__VA_ARGS__##_PHYS_ADDR;	\
 	x.cfg1_size = CONFIG_SYS_PCIE_CFG1_SIZE;	\
 	x.mem_bus = CONFIG_SYS_PCIE_MEM_BUS;		\
 	x.mem_phys = CONFIG_SYS_PCIE_MEM_PHYS_OFF +	\
-		     CONFIG_SYS_PCIE##num##_PHYS_ADDR;	\
+		     CONFIG_SYS_PCIE##num##__VA_ARGS__##_PHYS_ADDR;	\
 	x.mem_size = CONFIG_SYS_PCIE_MEM_SIZE;		\
 	x.io_bus = CONFIG_SYS_PCIE_IO_BUS;		\
 	x.io_phys = CONFIG_SYS_PCIE_IO_PHYS_OFF +	\
-		    CONFIG_SYS_PCIE##num##_PHYS_ADDR;	\
+		    CONFIG_SYS_PCIE##num##__VA_ARGS__##_PHYS_ADDR;	\
 	x.io_size = CONFIG_SYS_PCIE_IO_SIZE;		\
 	x.pci_num = num;				\
 }
@@ -606,23 +611,49 @@ int ls_pcie_init_board(int busno)
 {
 	struct ls_pcie_info info;
 
+	u32 svr, ver;
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+
+	svr = gur_in32(&gur->svr);
+	ver = SVR_SOC_VER(svr);
+
 #ifdef CONFIG_PCIE1
-	SET_LS_PCIE_INFO(info, 1);
+	if ((ver == SVR_LS2088) || (ver == SVR_LS2084) ||
+	   (ver == SVR_LS2048) || (ver == SVR_LS2044)) {
+		SET_LS_PCIE_INFO(info, 1, _LS2088A);
+	} else
+		SET_LS_PCIE_INFO(info, 1);
+
 	busno = ls_pcie_init_ctrl(busno, PCIE1, &info);
 #endif
 
 #ifdef CONFIG_PCIE2
-	SET_LS_PCIE_INFO(info, 2);
+	if ((ver == SVR_LS2088) || (ver == SVR_LS2084) ||
+	   (ver == SVR_LS2048) || (ver == SVR_LS2044)) {
+		SET_LS_PCIE_INFO(info, 2, _LS2088A);
+	} else
+		SET_LS_PCIE_INFO(info, 2);
+
 	busno = ls_pcie_init_ctrl(busno, PCIE2, &info);
 #endif
 
 #ifdef CONFIG_PCIE3
-	SET_LS_PCIE_INFO(info, 3);
+	if ((ver == SVR_LS2088) || (ver == SVR_LS2084) ||
+	   (ver == SVR_LS2048) || (ver == SVR_LS2044)) {
+		SET_LS_PCIE_INFO(info, 3, _LS2088A);
+	} else
+		SET_LS_PCIE_INFO(info, 3);
+
 	busno = ls_pcie_init_ctrl(busno, PCIE3, &info);
 #endif
 
 #ifdef CONFIG_PCIE4
-	SET_LS_PCIE_INFO(info, 4);
+	if ((ver == SVR_LS2088) || (ver == SVR_LS2084) ||
+	   (ver == SVR_LS2048) || (ver == SVR_LS2044)) {
+		SET_LS_PCIE_INFO(info, 4, _LS2088A);
+	} else
+		SET_LS_PCIE_INFO(info, 4);
+
 	busno = ls_pcie_init_ctrl(busno, PCIE4, &info);
 #endif
 
