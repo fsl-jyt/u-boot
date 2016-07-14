@@ -191,6 +191,4 @@
 #define CONFIG_DOS_PARTITION
 #define CONFIG_CMD_EXT2
 
-#include <asm/fsl_secure_boot.h>
-
 #endif /* __LS1012A_COMMON_H */

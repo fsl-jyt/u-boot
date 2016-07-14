@@ -149,4 +149,6 @@
 
 #define CONFIG_FSL_CAAM			/* Enable CAAM */
 
+#include <asm/fsl_secure_boot.h>
+
 #endif /* __LS1012ARDB_H__ */

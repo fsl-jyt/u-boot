@@ -107,6 +107,8 @@
 #ifdef CONFIG_SYS_LS_PPA_FW_IN_XIP
 #ifdef CONFIG_LS1043A
 #define CONFIG_SYS_LS_PPA_ESBC_ADDR	0x600c0000
+#else
+#define CONFIG_SYS_LS_PPA_ESBC_ADDR	0x40480000
 #endif
 #else
 #error "No CONFIG_SYS_LS_PPA_FW_IN_xxx defined"
