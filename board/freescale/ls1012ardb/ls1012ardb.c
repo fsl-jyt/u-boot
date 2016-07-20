@@ -84,7 +84,7 @@ void mmdc_init(void)
 	/* configure timing parms */
 	out_be32(&mmdc->mdotc,  0x12554000);
 	out_be32(&mmdc->mdcfg0, 0xbabf7954);
-	out_be32(&mmdc->mdcfg1, 0xff328f64);
+	out_be32(&mmdc->mdcfg1, 0xdb328f64);
 	out_be32(&mmdc->mdcfg2, 0x01ff00db);
 
 	/* other parms	*/
