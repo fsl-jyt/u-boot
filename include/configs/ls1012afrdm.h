@@ -10,7 +10,6 @@
 #include "ls1012a_common.h"
 
 #ifndef CONFIG_SECURE_BOOT
-#define CONFIG_FSL_LS_PPA
 #if defined(CONFIG_FSL_LS_PPA)
 #define CONFIG_ARMV8_PSCI
 #define CONFIG_SYS_LS_PPA_DRAM_BLOCK_MIN_SIZE	(1UL * 1024 * 1024)
