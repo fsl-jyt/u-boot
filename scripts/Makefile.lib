@@ -310,7 +310,7 @@ $(obj)/%.c:    $(src)/%.asl
 
 # ITB
 # ---------------------------------------------------------------------------
-HOSTMKIMAGE= $(srctree)/tools/mkimage
+HOSTMKIMAGE= mkimage
 
 quiet_cmd_pack_dtb= ITB     $@
 cmd_pack_dtb= $(HOSTMKIMAGE) -f $< $@ \
