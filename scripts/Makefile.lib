@@ -310,11 +310,10 @@ $(obj)/%.c:    $(src)/%.asl
 
 # ITB
 # ---------------------------------------------------------------------------
-HOSTMKIMAGE= $(objtree)/tools/mkimage
+HOSTMKIMAGE= $(srctree)/tools/mkimage
 
 quiet_cmd_pack_dtb= ITB     $@
-cmd_pack_dtb= [ $(objtree) = $(srctree) ] || cp $< $(obj); \
-	$(HOSTMKIMAGE) -f $(obj)/$(notdir $<) $@ \
+cmd_pack_dtb= $(HOSTMKIMAGE) -f $< $@ \
 	$(if $(KBUILD_VERBOSE:1=), >/dev/null)
 
 $(obj)/%.itb:    $(src)/%.its
