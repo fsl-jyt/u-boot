@@ -91,12 +91,7 @@ dtb-$(CONFIG_TARGET_STV0991) += stv0991.dtb
 dtb-$(CONFIG_LS102XA) += ls1021a-qds.dtb \
 	ls1021a-twr-duart.dtb ls1021a-twr-lpuart.dtb
 dtb-$(CONFIG_FSL_LSCH3) += fsl-ls2080a-qds.dtb \
-	fsl-ls2080a-rdb.dtb \
-	fsl-ls2088a-qds.dtb \
-	fsl-ls2088a-rdb.dtb
-
-itb-$(CONFIG_FSL_LSCH3) += fsl-lsch3-qds.itb
-
+	fsl-ls2080a-rdb.dtb
 dtb-$(CONFIG_FSL_LSCH2) += fsl-ls1043a-qds-duart.dtb \
 	fsl-ls1043a-qds-lpuart.dtb \
 	fsl-ls1043a-rdb.dtb
@@ -209,10 +204,4 @@ PHONY += dtbs
 dtbs: $(addprefix $(obj)/, $(dtb-y))
 	@:
 
-targets += $(itb-y)
-PHONY += itbs
-
-itbs: $(addprefix $(obj)/, $(itb-y))
-	@:
-
-clean-files := *.dtb *.itb
+clean-files := *.dtb

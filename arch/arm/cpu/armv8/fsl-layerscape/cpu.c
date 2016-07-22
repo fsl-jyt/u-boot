@@ -53,39 +53,6 @@ void cpu_name(char *name)
 		strcpy(name, "unknown");
 }
 
-void unpack_packed_dtb(void)
-{
-        int noffset;
-        size_t size;
-        const void *img_addr, *fit;
-
-        struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
-        unsigned int svr, ver;
-
-        svr = gur_in32(&gur->svr);
-        ver = SVR_SOC_VER(svr);
-        fit = gd->fdt_blob;
-        switch(ver) {
-                case SVR_LS2080:
-                case SVR_LS2040:
-                case SVR_LS2085:
-                case SVR_LS2045:
-                        noffset = fit_image_get_node(fit, "ls2080a");
-                        break;
-                case SVR_LS2088:
-                case SVR_LS2084:
-                case SVR_LS2048:
-                case SVR_LS2044:
-                        noffset = fit_image_get_node(fit, "ls2088a");
-                default:
-                        hang();
-        }
-        fit_image_get_data(fit, noffset, &img_addr, &size);
-
-        gd->fdt_blob = (ulong *)img_addr;
-        return;
-}
-
 #ifndef CONFIG_SYS_DCACHE_OFF
 /*
  * Set the block entries according to the information of the table.
