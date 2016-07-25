@@ -182,6 +182,8 @@ unsigned long long get_qixis_addr(void);
 #define CONFIG_CMD_PCI
 #endif
 
+#define CONFIG_FSL_CAAM			/* Enable SEC/CAAM */
+
 /* Command line configuration */
 #define CONFIG_CMD_ENV
 

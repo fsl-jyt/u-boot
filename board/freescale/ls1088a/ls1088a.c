@@ -9,6 +9,7 @@
 #include <netdev.h>
 #include <fsl_ifc.h>
 #include <fsl_ddr.h>
+#include <fsl_sec.h>
 #include <asm/io.h>
 #include <fdt_support.h>
 #include <libfdt.h>
