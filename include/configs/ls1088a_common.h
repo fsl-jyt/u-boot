@@ -60,13 +60,6 @@
  */
 #define CPU_RELEASE_ADDR		secondary_boot_func
 
-/* Generic Timer Definitions */
-/*
- * This is not an accurate number. It is used in start.S. The frequency
- * will be udpated later when get_bus_freq(0) is available.
- */
-#define COUNTER_FREQUENCY		25000000	/* 25MHz */
-
 /* Size of malloc() pool */
 #define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + 2048 * 1024)
 
