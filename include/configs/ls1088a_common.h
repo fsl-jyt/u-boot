@@ -204,6 +204,7 @@
 
 #define CONFIG_PANIC_HANG	/* do not reset board on panic */
 
+#ifdef CONFIG_SPL
 #define CONFIG_SPL_BSS_START_ADDR      0x80100000
 #define CONFIG_SPL_BSS_MAX_SIZE                0x00100000
 #define CONFIG_SPL_DRIVERS_MISC_SUPPORT
@@ -220,8 +221,6 @@
 #define CONFIG_SPL_TARGET              "u-boot-with-spl.bin"
 #define CONFIG_SPL_TEXT_BASE           0x1800a000
 
-#define CONFIG_SYS_NAND_U_BOOT_DST     0x80400000
-#define CONFIG_SYS_NAND_U_BOOT_START   CONFIG_SYS_NAND_U_BOOT_DST
 #ifdef CONFIG_SD_BOOT
 #define CONFIG_SPL_MMC_SUPPORT
 #define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR               0x8B0
@@ -233,6 +232,7 @@
 #define CONFIG_SYS_SPL_MALLOC_SIZE     0x00100000
 #define CONFIG_SYS_SPL_MALLOC_START    0x80200000
 #define CONFIG_SYS_MONITOR_LEN         (512 * 1024)
+#endif
 
 #define CONFIG_SYS_BOOTM_LEN   (64 << 20)      /* Increase max gunzip size */
 
