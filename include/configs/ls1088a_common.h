@@ -120,6 +120,18 @@
 #define CONFIG_SYS_FLASH_QUIET_TEST
 #endif
 
+#ifndef __ASSEMBLY__
+unsigned long long get_qixis_addr(void);
+#endif
+
+#define QIXIS_BASE				get_qixis_addr()
+#define QIXIS_BASE_PHYS				0x20000000
+#define QIXIS_BASE_PHYS_EARLY			0xC000000
+
+
+#define CONFIG_SYS_NAND_BASE			0x530000000ULL
+#define CONFIG_SYS_NAND_BASE_PHYS		0x30000000
+
 /* Debug Server firmware */
 #define CONFIG_FSL_DEBUG_SERVER
 /* 2 sec timeout */
