@@ -157,18 +157,8 @@ static int ls_pcie_link_state(struct ls_pcie *pcie)
 static int ls_pcie_link_state(struct ls_pcie *pcie)
 {
 	u32 state;
-	u32 svr, ver, offset;
-	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
 
-	svr = gur_in32(&gur->svr);
-	ver = SVR_SOC_VER(svr);
-	if ((ver == SVR_LS2088) || (ver == SVR_LS2084)
-	    || (ver == SVR_LS2044) || (ver == SVR_LS2048))
-		offset = 0x407fc;
-	else
-		offset = PCIE_LUT_DBG;
-
-	state = pex_lut_in32(pcie->dbi + PCIE_LUT_BASE + offset) &
+	state = pex_lut_in32(pcie->dbi + PCIE_LUT_BASE + PCIE_LUT_DBG) &
 		LTSSM_STATE_MASK;
 	if (state < LTSSM_PCIE_L0) {
 		debug("....PCIe link error. LTSSM=0x%02x.\n", state);
