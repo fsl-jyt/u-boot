@@ -26,6 +26,9 @@ DECLARE_GLOBAL_DATA_PTR;
 #endif
 
 #define OFFSET_BITS_MASK	GENMASK(23, 0)
+/* the qspi contrller memmap space ,instead of flash space */
+#define OFFSET_BITS_MASK_QSPI_SPACE	GENMASK(27, 0)
+#define SPI_FLASH_ADDR_EXT_MAGIC	0xaa
 
 #define FLASH_STATUS_WEL	0x02
 
@@ -757,6 +760,13 @@ int qspi_xfer(struct fsl_qspi_priv *priv, unsigned int bitlen,
 	u32 bytes = DIV_ROUND_UP(bitlen, 8);
 	static u32 wr_sfaddr;
 	u32 txbuf;
+	u8 offset_ext = 0;
+	u32 flash_offset;
+
+	if (((u8 *)dout)[5] == SPI_FLASH_ADDR_EXT_MAGIC) {
+		offset_ext = 1;
+		memcpy(&flash_offset, dout + 1, 4);
+	}
 
 	if (dout) {
 		if (flags & SPI_XFER_BEGIN) {
@@ -772,14 +782,28 @@ int qspi_xfer(struct fsl_qspi_priv *priv, unsigned int bitlen,
 
 		if (priv->cur_seqid == QSPI_CMD_FAST_READ ||
 		    priv->cur_seqid == QSPI_CMD_RDAR) {
-			priv->sf_addr = swab32(txbuf) & OFFSET_BITS_MASK;
+			if (offset_ext)
+				priv->sf_addr = swab32(flash_offset) &
+					OFFSET_BITS_MASK_QSPI_SPACE;
+			else
+				priv->sf_addr = swab32(txbuf) &
+					OFFSET_BITS_MASK;
 		} else if ((priv->cur_seqid == QSPI_CMD_SE) ||
 			   (priv->cur_seqid == QSPI_CMD_BE_4K)) {
-			priv->sf_addr = swab32(txbuf) & OFFSET_BITS_MASK;
+			if (offset_ext)
+				priv->sf_addr = swab32(flash_offset) &
+					OFFSET_BITS_MASK_QSPI_SPACE;
+			else
+				priv->sf_addr = swab32(txbuf) &
+					OFFSET_BITS_MASK;
 			qspi_op_erase(priv);
 		} else if (priv->cur_seqid == QSPI_CMD_PP ||
 			   priv->cur_seqid == QSPI_CMD_WRAR) {
-			wr_sfaddr = swab32(txbuf) & OFFSET_BITS_MASK;
+			if (offset_ext)
+				wr_sfaddr = swab32(flash_offset) &
+					OFFSET_BITS_MASK_QSPI_SPACE;
+			else
+				wr_sfaddr = swab32(txbuf) & OFFSET_BITS_MASK;
 		} else if ((priv->cur_seqid == QSPI_CMD_BRWR) ||
 			 (priv->cur_seqid == QSPI_CMD_WREAR)) {
 #ifdef CONFIG_SPI_FLASH_BAR
