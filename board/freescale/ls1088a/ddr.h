@@ -28,7 +28,15 @@ static const struct board_specific_parameters udimm0[] = {
 	 *   num|  hi| rank|  clk| wrlvl |   wrlvl   |  wrlvl
 	 * ranks| mhz| GB  |adjst| start |   ctl2    |  ctl3
 	 */
-#if defined(CONFIG_TARGET_LS1088ARDB)
+#if defined(CONFIG_TARGET_LS1088AQDS)
+	{2,  1666, 0, 4,   15,  0x0b0a0808, 0x08080807,},
+	{2,  1900, 0, 4,    6,  0x08080A0C, 0x0D0E0F0A,},
+	{2,  2200, 0, 4,   10,  0x0B0C0D0C, 0x0E0F110E,},
+	{1,  1666, 0, 4,   15,  0x0b0a0808, 0x08080807,},
+	{1,  1900, 0, 4,    9,  0x0A0B0C0B, 0x0D0E0F0D,},
+	{1,  2200, 0, 4,   10,  0x0B0C0D0C, 0x0E0F110E,},
+	{}
+#elif defined(CONFIG_TARGET_LS1088ARDB)
 	{2,  1666, 0, 4,     12, 0x0b0a0907, 0x0707070a,},
 	{2,  1900, 0, 4,     12, 0x0b0a0907, 0x0707070a,},
 	{2,  2200, 0, 4,     12, 0x0b0a0907, 0x0707070a,},

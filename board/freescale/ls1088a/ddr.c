@@ -63,7 +63,7 @@ void fsl_ddr_board_options(memctl_options_t *popts,
 		panic("DIMM is not supported by this board");
 	}
 found:
-#if defined(CONFIG_EMU)
+#if defined(CONFIG_TARGET_LS1088AQDS) || defined(CONFIG_EMU)
 	debug("Found timing match: n_ranks %d, data rate %d, rank_gb %d\n"
 		"\tclk_adjust %d, wrlvl_start %d, wrlvl_ctrl_2 0x%x, wrlvl_ctrl_3 0x%x\n",
 		pbsp->n_ranks, pbsp->datarate_mhz_high, pbsp->rank_gb,
@@ -103,7 +103,7 @@ found:
 	 * Factors to consider for half-strength driver enable:
 	 *	- number of DIMMs installed
 	 */
-#if defined(CONFIG_EMU)
+#if defined(CONFIG_TARGET_LS1088AQDS) || defined(CONFIG_EMU)
 	popts->half_strength_driver_enable = 1;
 #else
 	popts->half_strength_driver_enable = 0;
@@ -122,7 +122,7 @@ found:
 	/* Enable ZQ calibration */
 	popts->zq_en = 1;
 
-#if defined(CONFIG_EMU)
+#if defined(CONFIG_TARGET_LS1088AQDS) || defined(CONFIG_EMU)
 	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_80ohm);
 	popts->ddr_cdr2 = DDR_CDR2_ODT(DDR_CDR_ODT_80ohm) |
 			  DDR_CDR2_VREF_OVRD(70);	/* Vref = 70% */
