@@ -43,6 +43,8 @@
 
 /* Flat Device Tree Definitions */
 #define CONFIG_OF_LIBFDT
+#define CONFIG_OF_BOARD_SETUP
+#define CONFIG_OF_STDOUT_VIA_ALIAS
 
 #ifndef CONFIG_SPL
 #define CONFIG_FSL_DDR_INTERACTIVE	/* Interactive debugging */
@@ -186,6 +188,11 @@ unsigned long long get_qixis_addr(void);
 
 /* Command line configuration */
 #define CONFIG_CMD_ENV
+#define CONFIG_CMD_GREPENV
+#define CONFIG_CMD_MII
+#define CONFIG_CMD_CACHE
+#define CONFIG_CMD_EXT2
+#define CONFIG_CMD_FAT
 
 /* Miscellaneous configurable options */
 #define CONFIG_SYS_LOAD_ADDR	(CONFIG_SYS_DDR_SDRAM_BASE + 0x10000000)
@@ -228,6 +235,7 @@ unsigned long long get_qixis_addr(void);
 				" cp.b $kernel_start $kernel_load" \
 				" $kernel_size && bootm $kernel_load"
 
+#define CONFIG_BOOTDELAY	10
 /* Monitor Command Prompt */
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
 #define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE + \
