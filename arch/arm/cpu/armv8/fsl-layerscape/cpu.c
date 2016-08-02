@@ -649,12 +649,15 @@ int timer_init(void)
 	u32 svr, ver;
 	u32 __iomem *cltbenr = (u32 *)CONFIG_SYS_FSL_PMU_CLTBENR;
 #endif
+
 #ifdef COUNTER_FREQUENCY_REAL
 	unsigned long cntfrq = COUNTER_FREQUENCY_REAL;
 
 	/* Update with accurate clock frequency */
 	asm volatile("msr cntfrq_el0, %0" : : "r" (cntfrq) : "memory");
 #endif
+	u32 __iomem *pctbenr = (u32 *)FSL_PMU_PCTBENR_OFFSET;
+	u32 pmu_val;
 
 #ifdef CONFIG_FSL_LSCH3
 	svr = gur_in32(&gur->svr);
@@ -672,6 +675,15 @@ int timer_init(void)
 	 */
 	out_le32(cltbenr, 0xf);
 #endif
+
+	/*
+	 * In certain Layerscape SoCs, the clock for each core's
+	 * has an enable bit in the PMU Physical Core Time Base Enable
+	 * Register (PCTBENR), which allows the watchdog to operate.
+	 */
+	pmu_val = in_le32(pctbenr);
+	pmu_val |= 0xff;
+	out_le32(pctbenr, pmu_val);
 
 	/* Enable clock for timer
 	 * This is a global setting.
