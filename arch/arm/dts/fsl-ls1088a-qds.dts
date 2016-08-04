@@ -14,7 +14,7 @@
 	model = "Freescale Layerscape 1088a QDS Board";
 	compatible = "fsl,ls1088a-qds", "fsl,ls1088a";
 	aliases {
-		duart0 = &qspi;
+		spi0 = &qspi;
 		spi1 = &dspi;
 	};
 };
