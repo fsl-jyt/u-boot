@@ -1145,7 +1145,7 @@ int spi_flash_scan(struct spi_flash *flash)
 	 * have 256b pages.
 	 */
 	if (ext_jedec == 0x4d00) {
-		if ((jedec == 0x0215) || (jedec == 0x216))
+		if ((jedec == 0x0215) || (jedec == 0x216) || (jedec == 0x220))
 			flash->page_size = 256;
 		else
 			flash->page_size = 512;
