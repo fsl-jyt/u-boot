@@ -167,7 +167,8 @@ static int ls_pcie_link_state(struct ls_pcie *pcie)
 
 	ver = SVR_SOC_VER(gur_in32(&gur->svr));
 	if ((ver == SVR_LS2088) || (ver == SVR_LS2084) ||
-	   (ver == SVR_LS2048) || (ver == SVR_LS2044)) {
+	   (ver == SVR_LS2048) || (ver == SVR_LS2044) ||
+	   (ver == SVR_LS1088)) {
 		lut_base = 0x80000;
 		offset = 0x407fc;
 	} else {
