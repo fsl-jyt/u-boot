@@ -67,7 +67,6 @@ static int sgmii_riser_phy_addr[] = {
 #define EMI1_RGMII1	0
 #define EMI1_RGMII2	1
 #define EMI1_SLOT1	2
-#define EMI2		3
 
 static const char * const mdio_names[] = {
 	"LS1088A_QDS_MDIO0",
@@ -571,15 +570,7 @@ void ls1088a_handle_phy_interface_xsgmii(int i)
 	case 0x15:
 	case 0x1D:
 	case 0x1E:
-		/*
-		 * XFI does not need a PHY to work, but to avoid U-boot use
-		 * default PHY address which is zero to a MAC when it found
-		 * a MAC has no PHY address, we give a PHY address to XFI
-		 * MAC.
-		 */
-		wriop_set_phy_address(i, i + 0x1F);
 		ls1088a_qds_enable_SFP_TX(SFP_TX);
-
 		break;
 	default:
 		printf("qds: WRIOP: Unsupported SerDes Protocol 0x%02x\n",
@@ -595,7 +586,6 @@ int board_eth_init(bd_t *bis)
 	char *mc_boot_env_var;
 #ifdef CONFIG_FSL_MC_ENET
 	struct memac_mdio_info *memac_mdio0_info;
-	struct memac_mdio_info *memac_mdio1_info;
 
 	initialize_dpmac_to_slot();
 
@@ -609,22 +599,10 @@ int board_eth_init(bd_t *bis)
 	/* Register the real MDIO1 bus */
 	fm_memac_mdio_init(bis, memac_mdio0_info);
 
-	memac_mdio1_info = (struct memac_mdio_info *)malloc(
-					sizeof(struct memac_mdio_info));
-	memac_mdio1_info->regs =
-		(struct memac_mdio_controller *)
-					CONFIG_SYS_FSL_WRIOP1_MDIO2;
-	memac_mdio1_info->name = DEFAULT_WRIOP_MDIO2_NAME;
-
-	/* Register the real MDIO2 bus */
-	fm_memac_mdio_init(bis, memac_mdio1_info);
-
 	/* Register the muxing front-ends to the MDIO buses */
 	ls1088a_qds_mdio_init(DEFAULT_WRIOP_MDIO1_NAME, EMI1_RGMII1);
 	ls1088a_qds_mdio_init(DEFAULT_WRIOP_MDIO1_NAME, EMI1_RGMII2);
 	ls1088a_qds_mdio_init(DEFAULT_WRIOP_MDIO1_NAME, EMI1_SLOT1);
-
-	ls1088a_qds_mdio_init(DEFAULT_WRIOP_MDIO2_NAME, EMI2);
 
 	for (i = WRIOP1_DPMAC1; i < NUM_WRIOP_PORTS; i++) {
 		switch (wriop_get_enet_if(i)) {
