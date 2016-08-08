@@ -142,6 +142,7 @@ static ulong mmc_write_blocks(struct mmc *mmc, lbaint_t start,
 
 	if (mmc_send_cmd(mmc, &cmd, &data)) {
 		printf("mmc write failed\n");
+		mmc_send_stop(mmc);
 		return 0;
 	}
 
@@ -149,13 +150,8 @@ static ulong mmc_write_blocks(struct mmc *mmc, lbaint_t start,
 	 * token, not a STOP_TRANSMISSION request.
 	 */
 	if (!mmc_host_is_spi(mmc) && blkcnt > 1) {
-		cmd.cmdidx = MMC_CMD_STOP_TRANSMISSION;
-		cmd.cmdarg = 0;
-		cmd.resp_type = MMC_RSP_R1b;
-		if (mmc_send_cmd(mmc, &cmd, NULL)) {
-			printf("mmc fail to send stop cmd\n");
+		if (mmc_send_stop(mmc))
 			return 0;
-		}
 	}
 
 	/* Waiting for the ready status */

@@ -91,6 +91,7 @@
 #define PRSSTAT_CINS		(0x00010000)
 #define PRSSTAT_BREN		(0x00000800)
 #define PRSSTAT_BWEN		(0x00000400)
+#define PRSSTAT_WTA		(0x00000100)
 #define PRSSTAT_SDSTB		(0X00000008)
 #define PRSSTAT_DLA		(0x00000004)
 #define PRSSTAT_CICHB		(0x00000002)
@@ -176,6 +177,9 @@ struct fsl_esdhc_cfg {
 	u32	sdhc_clk;
 	u8	max_bus_width;
 	struct mmc_config cfg;
+#ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC111
+	int rw_err;
+#endif
 };
 
 /* Select the correct accessors depending on endianess */

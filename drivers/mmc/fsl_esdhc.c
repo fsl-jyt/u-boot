@@ -100,8 +100,16 @@ static uint esdhc_xfertyp(struct mmc_cmd *cmd, struct mmc_data *data)
 		xfertyp |= XFERTYP_CICEN;
 	if (cmd->resp_type & MMC_RSP_136)
 		xfertyp |= XFERTYP_RSPTYP_136;
-	else if (cmd->resp_type & MMC_RSP_BUSY)
-		xfertyp |= XFERTYP_RSPTYP_48_BUSY;
+	/*
+	 * For CMD with busy response, the eSDHC driver would poll DAT0
+	 * until CMD completion rather than polling IRQSTAT. So, don't
+	 * set XFERTYP_RSPTYP_48_BUSY to avoid interrupts (DTOE or TC)
+	 * in IRQSTAT.
+	 *
+	 * Remove:
+	 * else if (cmd->resp_type & MMC_RSP_BUSY)
+	 *      xfertyp |= XFERTYP_RSPTYP_48_BUSY;
+	 */
 	else if (cmd->resp_type & MMC_RSP_PRESENT)
 		xfertyp |= XFERTYP_RSPTYP_48;
 
@@ -319,8 +327,12 @@ esdhc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 	volatile struct fsl_esdhc *regs = (struct fsl_esdhc *)cfg->esdhc_base;
 
 #ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC111
-	if (cmd->cmdidx == MMC_CMD_STOP_TRANSMISSION)
-		return 0;
+	if (cmd->cmdidx == MMC_CMD_STOP_TRANSMISSION) {
+		if (cfg->rw_err)
+			cfg->rw_err = 0;
+		else
+			return 0;
+	}
 #endif
 
 	esdhc_write32(&regs->irqstat, -1);
@@ -432,6 +444,32 @@ esdhc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 #ifdef CONFIG_SYS_FSL_ESDHC_USE_PIO
 		esdhc_pio_read_write(mmc, data);
 #else
+#ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC_A009620
+		int timeout = 5000;
+		if (data->flags & MMC_DATA_WRITE) {
+			while (esdhc_read32(&regs->prsstat) & PRSSTAT_WTA)
+				;
+
+			/* Poll on DATA0 line for 500 ms */
+			while (!(esdhc_read32(&regs->prsstat) & PRSSTAT_DAT0)) {
+				udelay(100);
+				timeout--;
+				if (timeout <= 0) {
+					err = TIMEOUT;
+					break;
+				}
+			}
+			if (!err) {
+				esdhc_write32(&regs->sysctl,
+					      esdhc_read32(&regs->sysctl) |
+					      SYSCTL_RSTD);
+				while ((esdhc_read32(&regs->sysctl) &
+					SYSCTL_RSTD))
+					;
+			}
+			goto out;
+		}
+#endif
 		do {
 			irqstat = esdhc_read32(&regs->irqstat);
 
@@ -471,6 +509,13 @@ out:
 			while ((esdhc_read32(&regs->sysctl) & SYSCTL_RSTD))
 				;
 		}
+#ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC111
+		if (cmd->cmdidx == MMC_CMD_READ_SINGLE_BLOCK ||
+		    cmd->cmdidx == MMC_CMD_READ_MULTIPLE_BLOCK ||
+		    cmd->cmdidx == MMC_CMD_WRITE_SINGLE_BLOCK ||
+		    cmd->cmdidx == MMC_CMD_WRITE_MULTIPLE_BLOCK)
+			cfg->rw_err = 1;
+#endif
 
 		/* If this was CMD11, then notify that power cycle is needed */
 		if (cmd->cmdidx == SD_CMD_SWITCH_UHS18V)
@@ -752,6 +797,9 @@ int fsl_esdhc_mmc_init(bd_t *bis)
 	cfg = calloc(sizeof(struct fsl_esdhc_cfg), 1);
 	cfg->esdhc_base = CONFIG_SYS_FSL_ESDHC_ADDR;
 	cfg->sdhc_clk = gd->arch.sdhc_clk;
+#ifdef CONFIG_SYS_FSL_ERRATUM_ESDHC111
+	cfg->rw_err = 0;
+#endif
 	return fsl_esdhc_initialize(bis, cfg);
 }
 
