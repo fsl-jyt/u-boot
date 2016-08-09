@@ -37,7 +37,7 @@ static const struct board_specific_parameters udimm0[] = {
 	{1,  1900, 0, 8,    9,  0x0A0B0C0B, 0x0D0E0F0D,},
 	{1,  2200, 0, 8,   10,  0x0B0C0D0C, 0x0E0F110E,},
 	{}
-#elif (defined(CONFIG_TARGET_LS1088ARDB)
+#elif (defined(CONFIG_TARGET_LS1088ARDB))
 	{2,  1666, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
 	{2,  1900, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
 	{2,  2200, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
