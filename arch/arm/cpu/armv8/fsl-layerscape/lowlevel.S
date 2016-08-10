@@ -358,6 +358,18 @@ slave_cpu:
 	tbz     x1, #25, cpu_is_le
 	rev     x0, x0                  /* BE to LE conversion */
 cpu_is_le:
+	ldr	x1, =0xbfe00000
+	msr	ttbr0_el2, x1
+
+	ldr	x1, =0x00022518
+	msr	tcr_el2, x1
+
+	ldr	x1, =0xff440c0400
+	msr	mair_el2, x1
+
+	ldr	x1, =0xc0183d
+	ldr	x1, [x0]
+
 	br	x0			/* branch to the given address */
 ENDPROC(secondary_boot_func)
 
