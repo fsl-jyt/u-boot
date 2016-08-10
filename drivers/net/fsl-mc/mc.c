@@ -478,7 +478,8 @@ int mc_init(u64 mc_fw_addr, u64 mc_dpc_addr)
 	 * Load the MC FW at the beginning of the MC private DRAM block:
 	 */
 	mc_copy_image("MC Firmware",
-		      (u64)raw_image_addr, raw_image_size, mc_ram_addr);
+		      (u64)raw_image_addr, raw_image_size,
+		      mc_ram_aligned_base_addr);
 #endif
 	dump_ram_words("firmware", (void *)mc_ram_addr);
 
