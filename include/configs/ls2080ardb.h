@@ -9,6 +9,17 @@
 
 #include "ls2080a_common.h"
 
+#define CONFIG_FSL_LS_PPA
+#if defined(CONFIG_FSL_LS_PPA)
+#define CONFIG_ARMV8_PSCI
+#define CONFIG_SYS_LS_PPA_DRAM_BLOCK_MIN_SIZE	(1UL * 1024 * 1024)
+
+#define CONFIG_SYS_LS_PPA_FW_IN_XIP
+#ifdef CONFIG_SYS_LS_PPA_FW_IN_XIP
+#define CONFIG_SYS_LS_PPA_FW_ADDR		0x580D00000
+#endif
+#endif
+
 #undef CONFIG_CONS_INDEX
 #define CONFIG_CONS_INDEX       2
 

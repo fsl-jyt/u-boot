@@ -154,6 +154,10 @@ int board_init(void)
 {
 	char *env_hwconfig;
 	u32 __iomem *dcfg_ccsr = (u32 __iomem *)DCFG_BASE;
+#ifdef CONFIG_FSL_LS_PPA
+	u64 ppa_entry;
+#endif
+
 #ifdef CONFIG_FSL_MC_ENET
 	u32 __iomem *irq_ccsr = (u32 __iomem *)ISC_BASE;
 #endif
@@ -183,6 +187,12 @@ int board_init(void)
 	out_le32(irq_ccsr + IRQCR_OFFSET / 4, AQR405_IRQ_MASK);
 #endif
 
+#ifdef CONFIG_FSL_LS_PPA
+	ppa_init_pre(&ppa_entry);
+
+	if (ppa_entry)
+		ppa_init_entry((void *)ppa_entry);
+#endif
 	return 0;
 }
 
