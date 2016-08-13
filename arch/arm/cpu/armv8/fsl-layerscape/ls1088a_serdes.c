@@ -51,7 +51,7 @@ int serdes_get_number(int serdes, int cfg)
 {
 	struct serdes_config *ptr;
 	int i, j, index, lnk;
-	int is_found = 0, max_lane = SRDS_MAX_LANES;
+	int is_found, max_lane = SRDS_MAX_LANES;
 
 	if (serdes >= ARRAY_SIZE(serdes_cfg_tbl))
 		return 0;
@@ -59,13 +59,14 @@ int serdes_get_number(int serdes, int cfg)
 	ptr = serdes_cfg_tbl[serdes];
 
 	while (ptr->ip_protocol) {
-		for (i = 0, j = max_lane - 1 ; i < max_lane; i++, j--) {
+		is_found = 1;
+		for (i = 0, j = max_lane - 1; i < max_lane; i++, j--) {
 			lnk = cfg & (0xf << 4 * i);
 			lnk = lnk >> (4 * i);
 
-			index = (serdes == FSL_SRDS_1) ? j : i;
+			index = (serdes == FSL_SRDS_1) ? i : j;
 
-			if (ptr->rcw_lanes[index] == lnk)
+			if (ptr->rcw_lanes[index] == lnk && is_found)
 				is_found = 1;
 			else
 				is_found = 0;
