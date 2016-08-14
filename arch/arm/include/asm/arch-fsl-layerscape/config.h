@@ -203,6 +203,9 @@
 #define CONFIG_SYS_FSL_SRDS_1
 #define CONFIG_SYS_FSL_SRDS_2
 
+#define CONFIG_SYS_FSL_RGMII1
+#define CONFIG_SYS_FSL_RGMII2
+
 /* DDR */
 #define CONFIG_SYS_FSL_DDR_LE
 #define CONFIG_SYS_LS2_DDR_BLOCK1_SIZE	((phys_size_t)2 << 30)

@@ -632,6 +632,10 @@ int arch_early_init_r(void)
 	}
 #endif
 
+#ifdef CONFIG_SYS_HAS_RGMII
+	fsl_rgmii_init();
+#endif
+
 #ifdef CONFIG_SYS_HAS_SERDES
 	fsl_serdes_init();
 #endif

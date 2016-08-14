@@ -19,6 +19,10 @@
 #define	CONFIG_SYS_HAS_SERDES
 #endif
 
+#if (defined(CONFIG_SYS_FSL_EC1) || defined(CONFIG_SYS_FSL_EC2))
+#define	CONFIG_SYS_HAS_RGMII
+#endif
+
 /* Link Definitions */
 #define CONFIG_SYS_INIT_SP_ADDR		(CONFIG_SYS_FSL_OCRAM_BASE + 0xfff0)
 
