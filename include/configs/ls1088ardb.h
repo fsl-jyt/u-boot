@@ -38,6 +38,7 @@
 #endif
 #endif
 
+#define CONFIG_SYS_FSL_CLK
 #if defined(CONFIG_QSPI_BOOT) || defined(CONFIG_SD_BOOT_QSPI)
 #define CONFIG_QIXIS_I2C_ACCESS
 #define CONFIG_SYS_NO_FLASH
