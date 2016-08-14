@@ -21,14 +21,14 @@ unsigned long get_board_ddr_clk(void);
 #endif
 
 #if defined(CONFIG_SD_BOOT)
-#define CONFIG_ENV_OFFSET		(1024 * 1024)
+#define CONFIG_ENV_OFFSET		(2 * 1024 * 1024)
 #define CONFIG_ENV_IS_IN_MMC
 #define CONFIG_SYS_MMC_ENV_DEV		0
 #define CONFIG_ENV_SIZE			0x2000
 #elif defined(CONFIG_QSPI_BOOT)
 #define CONFIG_ENV_IS_IN_SPI_FLASH
 #define CONFIG_ENV_SIZE			0x2000          /* 8KB */
-#define CONFIG_ENV_OFFSET		0x100000        /* 1MB */
+#define CONFIG_ENV_OFFSET		0x200000        /* 2MB */
 #define CONFIG_ENV_SECT_SIZE		0x40000
 #else
 #define CONFIG_ENV_IS_IN_FLASH
