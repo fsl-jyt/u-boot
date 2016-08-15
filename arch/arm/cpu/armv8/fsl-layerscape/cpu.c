@@ -30,8 +30,6 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-int numclusters = 0;
-
 void cpu_name(char *name)
 {
 	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
@@ -452,7 +450,6 @@ u32 cpu_mask(void)
 		}
 		i++;
 	} while ((cluster & TP_CLUSTER_EOC) == 0x0);
-	numclusters = i;
 
 	return mask;
 }
@@ -463,15 +460,6 @@ u32 cpu_mask(void)
 int cpu_numcores(void)
 {
 	return hweight32(cpu_mask());
-}
-
-/*
- * Return the number of clusters on this SOC.
- */
-int cpu_numclusters(void)
-{
-	cpu_mask();
-	return numclusters;
 }
 
 int fsl_qoriq_core_to_cluster(unsigned int core)
