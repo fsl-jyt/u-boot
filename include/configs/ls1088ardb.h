@@ -9,6 +9,12 @@
 
 #include "ls1088a_common.h"
 
+#ifdef CONFIG_QSPI_BOOT
+#define CONFIG_DISPLAY_BOARDINFO_LATE
+#else
+#define CONFIG_DISPLAY_BOARDINFO
+#endif
+
 #if 1
 #if defined(CONFIG_SD_BOOT)
 #define CONFIG_ENV_OFFSET		(2 * 1024 * 1024)
