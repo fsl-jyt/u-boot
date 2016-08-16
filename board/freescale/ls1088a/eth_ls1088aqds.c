@@ -504,7 +504,6 @@ void ls1088a_handle_phy_interface_sgmii(int dpmac_id)
 
 void ls1088a_handle_phy_interface_qsgmii(int dpmac_id)
 {
-	int lane = 0, slot;
 	struct mii_dev *bus;
 	struct ccsr_gur __iomem *gur = (void *)CONFIG_SYS_FSL_GUTS_ADDR;
 	u32 serdes1_prtcl, cfg;
@@ -523,33 +522,24 @@ void ls1088a_handle_phy_interface_qsgmii(int dpmac_id)
 		case 4:
 		case 5:
 		case 6:
-			lane = serdes_get_first_lane(FSL_SRDS_1, QSGMII_A);
-		break;
+			wriop_set_phy_address(dpmac_id, dpmac_id + 9);
+			break;
 		case 7:
 		case 8:
 		case 9:
 		case 10:
-			lane = serdes_get_first_lane(FSL_SRDS_1, QSGMII_B);
-		break;
+			wriop_set_phy_address(dpmac_id, dpmac_id + 1);
+			break;
 		}
-		slot = lane_to_slot_fsm1[lane];
 
-		switch (++slot) {
-		case 1:
-			/* Slot housing a QSGMII riser card? */
-			wriop_set_phy_address(dpmac_id, dpmac_id - 3);
-			dpmac_info[dpmac_id].board_mux = EMI1_SLOT1;
-			bus = mii_dev_for_muxval(EMI1_SLOT1);
-			wriop_set_mdio(dpmac_id, bus);
-			break;
-		case 2:
-			break;
-	}
-	break;
+		dpmac_info[dpmac_id].board_mux = EMI1_SLOT1;
+		bus = mii_dev_for_muxval(EMI1_SLOT1);
+		wriop_set_mdio(dpmac_id, bus);
+		break;
 	default:
 		printf("qds: WRIOP: Unsupported SerDes Protocol 0x%02x\n",
 		       serdes1_prtcl);
-	break;
+		break;
 	}
 
 	if (hwconfig_f("xqsgmii", env_hwconfig))
