@@ -64,7 +64,7 @@ int serdes_get_number(int serdes, int cfg)
 			lnk = cfg & (0xf << 4 * i);
 			lnk = lnk >> (4 * i);
 
-			index = (serdes == FSL_SRDS_1) ? i : j;
+			index = (serdes == FSL_SRDS_1) ? j : i;
 
 			if (ptr->rcw_lanes[index] == lnk && is_found)
 				is_found = 1;
