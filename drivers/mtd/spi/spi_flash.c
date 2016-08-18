@@ -702,7 +702,8 @@ int sst_write_bp(struct spi_flash *flash, u32 offset, size_t len,
 }
 #endif
 
-#if defined(CONFIG_SPI_FLASH_STMICRO) || defined(CONFIG_SPI_FLASH_SST)
+#if defined(CONFIG_SPI_FLASH_STMICRO) || defined(CONFIG_SPI_FLASH_SST) || \
+	defined(CONFIG_SPI_FLASH_SPANSION)
 static void stm_get_locked_range(struct spi_flash *flash, u8 sr, loff_t *ofs,
 				 u32 *len)
 {
