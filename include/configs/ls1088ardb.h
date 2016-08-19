@@ -4,8 +4,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __LS2_RDB_H
-#define __LS2_RDB_H
+#ifndef __LS1088A_RDB_H
+#define __LS1088A_RDB_H
 
 #include "ls1088a_common.h"
 
@@ -313,7 +313,8 @@
 	"kernel_load=0xa0000000\0"		\
 	"kernel_size=0x2800000\0"		\
 	"mcinitcmd=fsl_mc start mc 0x580300000"	\
-	" 0x580800000 \0"
+	" 0x580800000 \0" \
+	"mcmemsize=0x70000000 \0"
 
 /* MAC/PHY configuration */
 #ifdef CONFIG_FSL_MC_ENET
@@ -355,4 +356,4 @@
 
 #include <asm/fsl_secure_boot.h>
 
-#endif /* __LS2_RDB_H */
+#endif /* __LS1088A_RDB_H */
