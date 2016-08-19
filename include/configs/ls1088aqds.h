@@ -4,8 +4,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __LS1088AQDS_H__
-#define __LS1088AQDS_H__
+#ifndef __LS1088A_QDS_H
+#define __LS1088A_QDS_H
 
 #include "ls1088a_common.h"
 
@@ -379,7 +379,8 @@ unsigned long get_board_ddr_clk(void);
 	"kernel_load=0xa0000000\0"		\
 	"kernel_size=0x2800000\0"		\
 	"mcinitcmd=fsl_mc start mc 0x580300000"	\
-	" 0x580800000 \0"
+	" 0x580800000 \0" \
+	"mcmemsize=0x70000000 \0"
 
 #ifdef CONFIG_FSL_MC_ENET
 #define CONFIG_FSL_MEMAC
@@ -432,4 +433,4 @@ unsigned long get_board_ddr_clk(void);
 
 #include <asm/fsl_secure_boot.h>
 
-#endif /* __LS1088AQDS_H__ */
+#endif /* __LS1088A_QDS_H */
