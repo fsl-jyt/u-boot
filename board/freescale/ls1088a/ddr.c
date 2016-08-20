@@ -25,19 +25,14 @@ void fsl_ddr_board_options(memctl_options_t *popts,
 	if (!pdimm->n_ranks)
 		return;
 
-	/*
-	 * we use identical timing for all slots. If needed, change the code
-	 * to  pbsp = rdimms[ctrl_num] or pbsp = udimms[ctrl_num];
-	 */
-	pbsp = udimms[ctrl_num];
+	pbsp = udimms[0];
 
 	/* Get clk_adjust, wrlvl_start, wrlvl_ctl, according to the board ddr
 	 * freqency and n_banks specified in board_specific_parameters table.
 	 */
 	ddr_freq = get_ddr_freq(0) / 1000000;
 	while (pbsp->datarate_mhz_high) {
-		if (pbsp->n_ranks == pdimm->n_ranks &&
-		    (pdimm->rank_density >> 30) >= pbsp->rank_gb) {
+		if (pbsp->n_ranks == pdimm->n_ranks) {
 			if (ddr_freq <= pbsp->datarate_mhz_high) {
 				popts->clk_adjust = pbsp->clk_adjust;
 				popts->wrlvl_start = pbsp->wrlvl_start;
@@ -69,41 +64,12 @@ found:
 		pbsp->clk_adjust, pbsp->wrlvl_start, pbsp->wrlvl_ctl_2,
 		pbsp->wrlvl_ctl_3);
 
-#ifdef CONFIG_FORCE_DDR_DATA_BUS_WIDTH_32
-	pdimm[0].dq_mapping[0] = 0x15;
-	pdimm[0].dq_mapping[1] = 0x35;
-	pdimm[0].dq_mapping[2] = 0x0b;
-	pdimm[0].dq_mapping[3] = 0x2c;
-	pdimm[0].dq_mapping[4] = 0x15;
-	pdimm[0].dq_mapping[5] = 0x35;
-	pdimm[0].dq_mapping[6] = 0x15;
-	pdimm[0].dq_mapping[7] = 0x35;
-	pdimm[0].dq_mapping[8] = 0xc;
-	pdimm[0].dq_mapping[9] = 0;
-	pdimm[0].dq_mapping[10] = 0;
-	pdimm[0].dq_mapping[11] = 0;
-	pdimm[0].dq_mapping[12] = 0;
-	pdimm[0].dq_mapping[13] = 0;
-	pdimm[0].dq_mapping[14] = 0;
-	pdimm[0].dq_mapping[15] = 0;
-	pdimm[0].dq_mapping[16] = 0;
-	pdimm[0].dq_mapping[17] = 0;
-	popts->data_bus_width = DDR_DATA_BUS_WIDTH_32;
-#else
-	/* default usually we set DDR data bus width to 64-bit */
-	popts->data_bus_width = DDR_DATA_BUS_WIDTH_64;
-#endif
-
+	popts->data_bus_width = 0;      /* 64b data bus */
 	popts->otf_burst_chop_en = 0;
 	popts->burst_length = DDR_BL8;
-	popts->bstopre = 0;	     /* enable auto precharge */
+	popts->bstopre = 0;		/* enable auto precharge */
 
-	/*
-	 * Factors to consider for half-strength driver enable:
-	 *	- number of DIMMs installed
-	 */
 	popts->half_strength_driver_enable = 0;
-
 	/*
 	 * Write leveling override
 	 */
@@ -121,7 +87,7 @@ found:
 #if defined(CONFIG_TARGET_LS1088AQDS) || defined(CONFIG_EMU)
 	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_80ohm);
 	popts->ddr_cdr2 = DDR_CDR2_ODT(DDR_CDR_ODT_80ohm) |
-			  DDR_CDR2_VREF_OVRD(70);	/* Vref = 70% */
+			  DDR_CDR2_VREF_TRAIN_EN | DDR_CDR2_VREF_RANGE_2;
 #else
 	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_60ohm);
 	popts->ddr_cdr2 = DDR_CDR2_ODT(DDR_CDR_ODT_100ohm) |

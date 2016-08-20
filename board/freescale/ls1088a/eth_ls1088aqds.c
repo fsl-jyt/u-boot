@@ -419,17 +419,17 @@ static void initialize_dpmac_to_slot(void)
 	case 0x1D:
 		printf("qds: WRIOP: Supported SerDes1 Protocol 0x%02x\n",
 		       serdes1_prtcl);
-		lane_to_slot_fsm1[0] = EMI1_SLOT1;
-		lane_to_slot_fsm1[1] = EMI1_SLOT1;
+		lane_to_slot_fsm1[0] = EMI1_SLOT1 - 1;
+		lane_to_slot_fsm1[1] = EMI1_SLOT1 - 1;
 		lane_to_slot_fsm1[2] = EMI_NONE;
 		lane_to_slot_fsm1[3] = EMI_NONE;
 		break;
 	case 0x1E:
 		printf("qds: WRIOP: Supported SerDes1 Protocol 0x%02x\n",
 		       serdes1_prtcl);
-		lane_to_slot_fsm1[0] = EMI1_SLOT1;
-		lane_to_slot_fsm1[1] = EMI1_SLOT1;
-		lane_to_slot_fsm1[2] = EMI1_SLOT1;
+		lane_to_slot_fsm1[0] = EMI1_SLOT1 - 1;
+		lane_to_slot_fsm1[1] = EMI1_SLOT1 - 1;
+		lane_to_slot_fsm1[2] = EMI1_SLOT1 - 1;
 		lane_to_slot_fsm1[3] = EMI_NONE;
 		break;
 
@@ -466,7 +466,7 @@ void ls1088a_handle_phy_interface_sgmii(int dpmac_id)
 		lane = serdes_get_first_lane(FSL_SRDS_1, SGMII1 + dpmac_id - 1);
 		slot = lane_to_slot_fsm1[lane];
 
-		switch (++slot) {
+		switch (slot) {
 		case 1:
 			/* Slot housing a SGMII riser card? */
 			switch(dpmac_id) {
@@ -560,6 +560,7 @@ void ls1088a_handle_phy_interface_xsgmii(int i)
 	case 0x15:
 	case 0x1D:
 	case 0x1E:
+		wriop_set_phy_address(i, i + 26);
 		ls1088a_qds_enable_SFP_TX(SFP_TX);
 		break;
 	default:
