@@ -57,7 +57,11 @@ int checkboard(void)
 #endif
 	sw = QIXIS_READ(arch);
 	printf("Board Arch: V%d, ", sw >> 4);
+#ifdef CONFIG_TARGET_LS1088AQDS
 	printf("Board version: %c, boot from ", (sw & 0xf) + 'A' - 1);
+#else
+	printf("Board version: %c, boot from ", (sw & 0xf) + 'A');
+#endif
 
 	memset((u8 *)buf, 0x00, ARRAY_SIZE(buf));
 
@@ -105,11 +109,15 @@ int checkboard(void)
 		break;
 	}
 
+#ifdef CONFIG_TARGET_LS1088AQDS
 	printf("FPGA: v%d (%s), build %d",
 	       (int)QIXIS_READ(scver), qixis_read_tag(buf),
 	       (int)qixis_read_minor());
 	/* the timestamp string contains "\n" at the end */
 	printf(" on %s", qixis_read_time(buf));
+#else
+	printf("CPLD: v%d.%d\n", QIXIS_READ(scver), QIXIS_READ(tagdata));
+#endif
 
 	/*
 	 * Display the actual SERDES reference clocks as configured by the
