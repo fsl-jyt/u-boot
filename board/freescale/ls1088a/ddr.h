@@ -29,21 +29,11 @@ static const struct board_specific_parameters udimm0[] = {
 	 * ranks| mhz| GB  |adjst| start |   ctl2    |  ctl3
 	 */
 #ifndef CONFIG_EMU
-#if defined(CONFIG_TARGET_LS1088AQDS)
 	{2,  1350, 0, 4,     6, 0x0708090B, 0x0C0D0E09,},
 	{2,  1666, 0, 4,     7, 0x08090A0C, 0x0D0F100B,},
 	{2,  1900, 0, 4,     7, 0x09090B0D, 0x0E10120B,},
 	{2,  2300, 0, 4,     9, 0x0A0C0D11, 0x1214150E,},
 	{}
-#elif (defined(CONFIG_TARGET_LS1088ARDB))
-	{2,  1666, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
-	{2,  1900, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
-	{2,  2200, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
-	{1,  1666, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
-	{1,  1900, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
-	{1,  2200, 0, 8,     12, 0x0b0a0907, 0x0707070a,},
-	{}
-#endif
 #else
 	{2,  2140, 0, 8,     4, 0x0, 0x0},
 	{1,  2140, 0, 8,     4, 0x0, 0x0},

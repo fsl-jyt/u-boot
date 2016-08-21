@@ -84,15 +84,9 @@ found:
 	/* Enable ZQ calibration */
 	popts->zq_en = 1;
 
-#if defined(CONFIG_TARGET_LS1088AQDS) || defined(CONFIG_EMU)
 	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_80ohm);
 	popts->ddr_cdr2 = DDR_CDR2_ODT(DDR_CDR_ODT_80ohm) |
 			  DDR_CDR2_VREF_TRAIN_EN | DDR_CDR2_VREF_RANGE_2;
-#else
-	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_60ohm);
-	popts->ddr_cdr2 = DDR_CDR2_ODT(DDR_CDR_ODT_100ohm) |
-			  DDR_CDR2_VREF_OVRD(70);       /* Vref = 70% */
-#endif
 }
 
 
