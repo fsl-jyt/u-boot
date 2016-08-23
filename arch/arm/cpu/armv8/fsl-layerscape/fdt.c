@@ -360,7 +360,7 @@ void ft_cpu_setup(void *blob, bd_t *bd)
 	fdt_fixup_usb(blob);
 #endif
 
-#ifdef CONFIG_LS1043A
+#if defined(CONFIG_LS1043A) || defined(CONFIG_LS1088A)
 #ifdef CONFIG_FSL_QSPI
 	do_fixup_by_compat(blob, "fsl,ifc",
 			   "status", "disabled", 8 + 1, 1);
