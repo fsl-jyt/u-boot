@@ -193,7 +193,7 @@ static void qsgmii_configure_repeater(int dpmac)
 	uint8_t ch_b_eq[] = {0x1, 0x2, 0x3, 0x7};
 	uint8_t ch_b_ctl2[] = {0x81, 0x82, 0x83, 0x84};
 
-	const char *dev = "LS1088A_QDS_MDIO2";
+	const char *dev = "LS1088A_QDS_MDIO1";
 	int ret = 0;
 	unsigned short value;
 
@@ -201,34 +201,18 @@ static void qsgmii_configure_repeater(int dpmac)
 	i2c_write(0x77, 0, 0, &a, 1);
 
 	switch (dpmac) {
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-		i2c_phy_addr = i2c_addr[0];
-		phy_addr = 0;
-		break;
-
-	case 5:
-	case 6:
 	case 7:
 	case 8:
-		i2c_phy_addr = i2c_addr[1];
-		phy_addr = 4;
-		break;
-
 	case 9:
 	case 10:
-	case 11:
-	case 12:
 		i2c_phy_addr = i2c_addr[2];
 		phy_addr = 8;
 		break;
 
-	case 13:
-	case 14:
-	case 15:
-	case 16:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
 		i2c_phy_addr = i2c_addr[3];
 		phy_addr = 0xc;
 		break;
@@ -243,6 +227,7 @@ static void qsgmii_configure_repeater(int dpmac)
 	ret = miiphy_read(dev, phy_addr, 0x11, &value);
 	mdelay(10);
 	if ((value & 0xf) == 0xf) {
+		miiphy_write(dev, phy_addr, 0x1f, 0);
 		printf("DPMAC %d :PHY is ..... Configured\n", dpmac);
 		return;
 	}
@@ -278,6 +263,7 @@ static void qsgmii_configure_repeater(int dpmac)
 				goto error;
 			mdelay(10);
 			if ((value & 0xf) == 0xf) {
+				miiphy_write(dev, phy_addr, 0x1f, 0);
 				printf("DPMAC %d :PHY is ..... Configured\n",
 				       dpmac);
 				return;
