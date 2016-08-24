@@ -232,9 +232,16 @@ unsigned long long get_qixis_addr(void);
 				"earlycon=uart8250,mmio,0x21c0500" \
 				"ramdisk_size=0x2000000 default_hugepagesz=2m" \
 				" hugepagesz=2m hugepages=256"
+#if defined(CONFIG_QSPI_BOOT)
+#define CONFIG_BOOTCOMMAND	"sf probe 0:0;sf read 0x80200000 0x700000 0x100000;"\
+				" fsl_mc apply dpl 0x80200000 &&" \
+				" sf read $kernel_load $kernel_start" \
+				" $kernel_size && bootm $kernel_load"
+#else
 #define CONFIG_BOOTCOMMAND	"fsl_mc apply dpl 0x580700000 &&" \
 				" cp.b $kernel_start $kernel_load" \
 				" $kernel_size && bootm $kernel_load"
+#endif
 
 #define CONFIG_BOOTDELAY	10
 /* Monitor Command Prompt */
