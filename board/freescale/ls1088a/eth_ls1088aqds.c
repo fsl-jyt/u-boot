@@ -401,6 +401,14 @@ static void initialize_dpmac_to_slot(void)
 	serdes1_prtcl = serdes_get_number(FSL_SRDS_1, cfg);
 
 	switch (serdes1_prtcl) {
+	case 0x12:
+		printf("qds: WRIOP: Supported SerDes1 Protocol 0x%02x\n",
+		       serdes1_prtcl);
+		lane_to_slot_fsm1[0] = EMI1_SLOT1 - 1;
+		lane_to_slot_fsm1[1] = EMI1_SLOT1 - 1;
+		lane_to_slot_fsm1[2] = EMI1_SLOT1 - 1;
+		lane_to_slot_fsm1[3] = EMI1_SLOT1 - 1;
+		break;
 	case 0x15:
 	case 0x1D:
 		printf("qds: WRIOP: Supported SerDes1 Protocol 0x%02x\n",
@@ -447,6 +455,7 @@ void ls1088a_handle_phy_interface_sgmii(int dpmac_id)
 		riser_phy_addr = &sgmii_riser_phy_addr[0];
 
 	switch (serdes1_prtcl) {
+	case 0x12:
 	case 0x15:
 	case 0x1E:
 		lane = serdes_get_first_lane(FSL_SRDS_1, SGMII1 + dpmac_id - 1);
@@ -460,6 +469,11 @@ void ls1088a_handle_phy_interface_sgmii(int dpmac_id)
 				wriop_set_phy_address(dpmac_id,
 						      riser_phy_addr[1]);
 				break;
+			case 2:
+				wriop_set_phy_address(dpmac_id,
+						      riser_phy_addr[0]);
+				break;
+
 			case 3:
 				wriop_set_phy_address(dpmac_id,
 						      riser_phy_addr[3]);
