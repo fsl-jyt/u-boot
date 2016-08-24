@@ -193,7 +193,7 @@ static void qsgmii_configure_repeater(int dpmac)
 	uint8_t ch_b_eq[] = {0x1, 0x2, 0x3, 0x7};
 	uint8_t ch_b_ctl2[] = {0x81, 0x82, 0x83, 0x84};
 
-	const char *dev = "LS1088A_QDS_MDIO1";
+	const char *dev = mdio_names[EMI1_SLOT1];
 	int ret = 0;
 	unsigned short value;
 
@@ -493,7 +493,6 @@ void ls1088a_handle_phy_interface_qsgmii(int dpmac_id)
 	struct mii_dev *bus;
 	struct ccsr_gur __iomem *gur = (void *)CONFIG_SYS_FSL_GUTS_ADDR;
 	u32 serdes1_prtcl, cfg;
-	char *env_hwconfig = getenv("hwconfig");
 
 	cfg = in_le32(&gur->rcwsr[FSL_CHASSIS3_SRDS1_REGSR - 1]) &
 				FSL_CHASSIS3_SRDS1_PRTCL_MASK;
@@ -527,9 +526,6 @@ void ls1088a_handle_phy_interface_qsgmii(int dpmac_id)
 		       serdes1_prtcl);
 		break;
 	}
-
-	if (hwconfig_f("xqsgmii", env_hwconfig))
-		qsgmii_configure_repeater(dpmac_id);
 }
 
 void ls1088a_handle_phy_interface_xsgmii(int i)
@@ -595,6 +591,7 @@ int board_eth_init(bd_t *bis)
 	char *mc_boot_env_var;
 #ifdef CONFIG_FSL_MC_ENET
 	struct memac_mdio_info *memac_mdio0_info;
+	char *env_hwconfig = getenv("hwconfig");
 
 	initialize_dpmac_to_slot();
 
@@ -639,6 +636,21 @@ int board_eth_init(bd_t *bis)
 	if (mc_boot_env_var)
 		run_command_list(mc_boot_env_var, -1, 0);
 	error = cpu_eth_init(bis);
+
+	if (hwconfig_f("xqsgmii", env_hwconfig)) {
+		for (i = WRIOP1_DPMAC1; i < NUM_WRIOP_PORTS; i++) {
+			switch (wriop_get_enet_if(i)) {
+			case PHY_INTERFACE_MODE_QSGMII:
+				qsgmii_configure_repeater(i);
+				break;
+			default:
+				break;
+			}
+
+			if (i == 16)
+				i = NUM_WRIOP_PORTS;
+		}
+	}
 #endif
 	error = pci_eth_init(bis);
 	return error;
