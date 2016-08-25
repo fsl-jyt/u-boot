@@ -238,8 +238,7 @@ void fsl_ddr_set_memctl_regs(const fsl_ddr_cfg_regs_t *regs,
 
 #ifdef CONFIG_SYS_FSL_ERRATUM_A008511
 	/* Part 1 of 2 */
-	if ((fsl_ddr_get_version(ctrl_num) == 0x50200) ||
-	(fsl_ddr_get_version(ctrl_num) == 0x50201)) {
+	if (fsl_ddr_get_version(ctrl_num) == 0x50200) {
 		/* Disable DRAM VRef training */
 		ddr_out32(&ddr->ddr_cdr2,
 			  regs->ddr_cdr2 & ~DDR_CDR2_VREF_TRAIN_EN);
@@ -357,8 +356,7 @@ step2:
 
 #ifdef CONFIG_SYS_FSL_ERRATUM_A008511
 	/* This erraum only applies to verion 5.2.0 */
-		if ((fsl_ddr_get_version(ctrl_num) == 0x50200) ||
-	(fsl_ddr_get_version(ctrl_num) == 0x50201)) {
+		if (fsl_ddr_get_version(ctrl_num) == 0x50200) {
 		/* The vref setting sequence is different for range 2 */
 		if (regs->ddr_cdr2 & DDR_CDR2_VREF_RANGE_2)
 			vref_seq = vref_seq2;
