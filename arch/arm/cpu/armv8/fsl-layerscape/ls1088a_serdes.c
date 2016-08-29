@@ -30,6 +30,7 @@ static struct serdes_config serdes1_cfg_tbl[] = {
 	{0x20, {QSGMII_A, QSGMII_B, SGMII1, SGMII2 }, {4, 4, 2, 2 } },
 	{0x35, {SGMII3, QSGMII_B, SGMII1, SGMII2 }, {3, 4, 3, 3 } },
 	{0x36, {QSGMII_A, QSGMII_B, SGMII1, SGMII2 }, {4, 4, 3, 3 } },
+	{0x3A, {SGMII3, PCIE1, SGMII1, SGMII2 }, {3, 5, 3, 3 } },
 		{}
 };
 static struct serdes_config serdes2_cfg_tbl[] = {
@@ -39,6 +40,7 @@ static struct serdes_config serdes2_cfg_tbl[] = {
 	{0x0E, {PCIE1, PCIE1, PCIE2, SATA1 }, {7, 7, 6, 9 }  },
 	{0x13, {PCIE1, PCIE1, PCIE3, PCIE3 }, {7, 7, 7, 7 }  },
 	{0x14, {PCIE1, PCIE2, PCIE3, PCIE3 }, {5, 5, 7, 7 }  },
+	{0x3C, {NONE, PCIE2, NONE, PCIE3 }, {0, 5, 0, 6 }  },
 	{}
 };
 
