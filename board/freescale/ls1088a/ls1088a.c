@@ -213,7 +213,7 @@ void board_retimer_init(void)
 {
 	u8 reg;
 
-	/* Retimer is connected to I2C1_CH7_CH5 */
+	/* Retimer is connected to I2C1_CH5 */
 	select_i2c_ch_pca9547(I2C_MUX_CH5);
 
 	/* Access to Control/Shared register */
@@ -233,26 +233,10 @@ void board_retimer_init(void)
 	reg |= 0x4;
 	i2c_write(I2C_RETIMER_ADDR, 0, 1, &reg, 1);
 
-	/* Enable override divider select and Enable Override Output Mux */
-	i2c_read(I2C_RETIMER_ADDR, 9, 1, &reg, 1);
-	reg |= 0x24;
-	i2c_write(I2C_RETIMER_ADDR, 9, 1, &reg, 1);
-
-	/* Select VCO Divider to full rate (000) */
-	i2c_read(I2C_RETIMER_ADDR, 0x18, 1, &reg, 1);
-	reg &= 0x8f;
-	i2c_write(I2C_RETIMER_ADDR, 0x18, 1, &reg, 1);
-
-	/* Selects active PFD MUX Input as Re-timed Data (001) */
-	i2c_read(I2C_RETIMER_ADDR, 0x1e, 1, &reg, 1);
-	reg &= 0x3f;
-	reg |= 0x20;
-	i2c_write(I2C_RETIMER_ADDR, 0x1e, 1, &reg, 1);
-
 	/* Set data rate as 10.3125 Gbps */
-	reg = 0x0;
+	reg = 0x90;
 	i2c_write(I2C_RETIMER_ADDR, 0x60, 1, &reg, 1);
-	reg = 0xb0;
+	reg = 0xb3;
 	i2c_write(I2C_RETIMER_ADDR, 0x61, 1, &reg, 1);
 	reg = 0x90;
 	i2c_write(I2C_RETIMER_ADDR, 0x62, 1, &reg, 1);
@@ -261,8 +245,16 @@ void board_retimer_init(void)
 	reg = 0xcd;
 	i2c_write(I2C_RETIMER_ADDR, 0x64, 1, &reg, 1);
 
+	/* Select VCO Divider to full rate (000) */
+	i2c_read(I2C_RETIMER_ADDR, 0x2F, 1, &reg, 1);
+	reg &= 0x0f;
+	reg |= 0x70;
+	i2c_write(I2C_RETIMER_ADDR, 0x2F, 1, &reg, 1);
+
 #ifdef	CONFIG_TARGET_LS1088AQDS
-	/* config secondary I2C retimer */
+	/* Retimer is connected to I2C1_CH5 */
+	select_i2c_ch_pca9547(I2C_MUX_CH5);
+
 	/* Access to Control/Shared register */
 	reg = 0x0;
 	i2c_write(I2C_RETIMER_ADDR2, 0xff, 1, &reg, 1);
@@ -280,26 +272,10 @@ void board_retimer_init(void)
 	reg |= 0x4;
 	i2c_write(I2C_RETIMER_ADDR2, 0, 1, &reg, 1);
 
-	/* Enable override divider select and Enable Override Output Mux */
-	i2c_read(I2C_RETIMER_ADDR2, 9, 1, &reg, 1);
-	reg |= 0x24;
-	i2c_write(I2C_RETIMER_ADDR2, 9, 1, &reg, 1);
-
-	/* Select VCO Divider to full rate (000) */
-	i2c_read(I2C_RETIMER_ADDR2, 0x18, 1, &reg, 1);
-	reg &= 0x8f;
-	i2c_write(I2C_RETIMER_ADDR2, 0x18, 1, &reg, 1);
-
-	/* Selects active PFD MUX Input as Re-timed Data (001) */
-	i2c_read(I2C_RETIMER_ADDR2, 0x1e, 1, &reg, 1);
-	reg &= 0x3f;
-	reg |= 0x20;
-	i2c_write(I2C_RETIMER_ADDR2, 0x1e, 1, &reg, 1);
-
 	/* Set data rate as 10.3125 Gbps */
-	reg = 0x0;
+	reg = 0x90;
 	i2c_write(I2C_RETIMER_ADDR2, 0x60, 1, &reg, 1);
-	reg = 0xb0;
+	reg = 0xb3;
 	i2c_write(I2C_RETIMER_ADDR2, 0x61, 1, &reg, 1);
 	reg = 0x90;
 	i2c_write(I2C_RETIMER_ADDR2, 0x62, 1, &reg, 1);
@@ -307,6 +283,12 @@ void board_retimer_init(void)
 	i2c_write(I2C_RETIMER_ADDR2, 0x63, 1, &reg, 1);
 	reg = 0xcd;
 	i2c_write(I2C_RETIMER_ADDR2, 0x64, 1, &reg, 1);
+
+	/* Select VCO Divider to full rate (000) */
+	i2c_read(I2C_RETIMER_ADDR2, 0x2F, 1, &reg, 1);
+	reg &= 0x0f;
+	reg |= 0x70;
+	i2c_write(I2C_RETIMER_ADDR2, 0x2F, 1, &reg, 1);
 #endif
 	/*return the default channel*/
 	select_i2c_ch_pca9547(I2C_MUX_CH_DEFAULT);
