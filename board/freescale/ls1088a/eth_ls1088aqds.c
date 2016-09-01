@@ -87,18 +87,38 @@ static void sgmii_configure_repeater(int dpmac)
 	int i, j, ret;
 	unsigned short value;
 	const char *dev = "LS1088A_QDS_MDIO2";
-	uint8_t i2c_addr[] = {0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5f, 0x60};
+	int i2c_addr[] = {0x58, 0x59, 0x5a, 0x5b};
+	int i2c_phy_addr = 0;
+	int phy_addr = 0;
 
 	uint8_t ch_a_eq[] = {0x1, 0x2, 0x3, 0x7};
 	uint8_t ch_a_ctl2[] = {0x81, 0x82, 0x83, 0x84};
 	uint8_t ch_b_eq[] = {0x1, 0x2, 0x3, 0x7};
 	uint8_t ch_b_ctl2[] = {0x81, 0x82, 0x83, 0x84};
 
-	int *riser_phy_addr = &xqsgii_riser_phy_addr[0];
-
 	/* Set I2c to Slot 1 */
 	i2c_write(0x77, 0, 0, &a, 1);
 
+	switch (dpmac) {
+	case 1:
+		i2c_phy_addr = i2c_addr[1];
+		phy_addr = 4;
+		break;
+	case 2:
+		i2c_phy_addr = i2c_addr[0];
+		phy_addr = 0;
+		break;
+	case 3:
+		i2c_phy_addr = i2c_addr[3];
+		phy_addr = 0xc;
+		break;
+	case 7:
+		i2c_phy_addr = i2c_addr[2];
+		phy_addr = 8;
+		break;
+	}
+
+	/* Check the PHY status */
 	ret = miiphy_set_current_dev(dev);
 	if (ret > 0)
 		goto error;
@@ -106,18 +126,19 @@ static void sgmii_configure_repeater(int dpmac)
 	bus = mdio_get_current_dev();
 	debug("Reading from bus %s\n", bus->name);
 
-	ret = miiphy_write(dev, riser_phy_addr[dpmac], 0x1f, 3);
+	ret = miiphy_write(dev, phy_addr, 0x1f, 3);
 	if (ret > 0)
 		goto error;
 
 	mdelay(10);
-	ret = miiphy_read(dev, riser_phy_addr[dpmac], 0x11, &value);
+	ret = miiphy_read(dev, phy_addr, 0x11, &value);
 	if (ret > 0)
 			goto error;
 
 	mdelay(10);
 
-	if ((value & 0xfff) == 0x40f){
+	if ((value & 0xfff) == 0x401) {
+		miiphy_write(dev, phy_addr, 0x1f, 0);
 		printf("DPMAC %d:PHY is ..... Configured\n", dpmac);
 		return;
 	}
@@ -125,55 +146,53 @@ static void sgmii_configure_repeater(int dpmac)
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++) {
 			a = 0x18;
-			i2c_write(i2c_addr[dpmac], 6, 1, &a, 1);
+			i2c_write(i2c_phy_addr, 6, 1, &a, 1);
 			a = 0x38;
-			i2c_write(i2c_addr[dpmac], 4, 1, &a, 1);
+			i2c_write(i2c_phy_addr, 4, 1, &a, 1);
 			a = 0x4;
-			i2c_write(i2c_addr[dpmac], 8, 1, &a, 1);
+			i2c_write(i2c_phy_addr, 8, 1, &a, 1);
 
-			i2c_write(i2c_addr[dpmac], 0xf, 1,
+			i2c_write(i2c_phy_addr, 0xf, 1,
 				  &ch_a_eq[i], 1);
-			i2c_write(i2c_addr[dpmac], 0x11, 1,
+			i2c_write(i2c_phy_addr, 0x11, 1,
 				  &ch_a_ctl2[j], 1);
 
-			i2c_write(i2c_addr[dpmac], 0x16, 1,
+			i2c_write(i2c_phy_addr, 0x16, 1,
 				  &ch_b_eq[i], 1);
-			i2c_write(i2c_addr[dpmac], 0x18, 1,
+			i2c_write(i2c_phy_addr, 0x18, 1,
 				  &ch_b_ctl2[j], 1);
 
 			a = 0x14;
-			i2c_write(i2c_addr[dpmac], 0x23, 1, &a, 1);
+			i2c_write(i2c_phy_addr, 0x23, 1, &a, 1);
 			a = 0xb5;
-			i2c_write(i2c_addr[dpmac], 0x2d, 1, &a, 1);
+			i2c_write(i2c_phy_addr, 0x2d, 1, &a, 1);
 			a = 0x20;
-			i2c_write(i2c_addr[dpmac], 4, 1, &a, 1);
+			i2c_write(i2c_phy_addr, 4, 1, &a, 1);
 			mdelay(100);
-			ret = miiphy_read(dev, riser_phy_addr[dpmac],
-					  0x11, &value);
+			ret = miiphy_read(dev, phy_addr, 0x11, &value);
 			if (ret > 0)
 				goto error;
 
-			mdelay(1);
-			ret = miiphy_read(dev, riser_phy_addr[dpmac],
-					  0x11, &value);
+			mdelay(100);
+			ret = miiphy_read(dev, phy_addr, 0x11, &value);
 			if (ret > 0)
 				goto error;
-			mdelay(10);
 
-			if ((value & 0xfff) == 0x40f) {
+			if ((value & 0xfff) == 0x401) {
 				printf("DPMAC %d :PHY is configured ",
 				       dpmac);
 				printf("after setting repeater 0x%x\n",
 				       value);
 				i = 5;
 				j = 5;
-			} else
+			} else {
 				printf("DPMAC %d :PHY is failed to ",
 					       dpmac);
-				printf("configure the repeater 0x%x\n",
-				       value);
+				printf("configure the repeater 0x%x\n", value);
 			}
+		}
 	}
+	miiphy_write(dev, phy_addr, 0x1f, 0);
 error:
 	if (ret)
 		printf("DPMAC %d ..... FAILED to configure PHY\n", dpmac);
@@ -444,7 +463,6 @@ static void initialize_dpmac_to_slot(void)
 
 void ls1088a_handle_phy_interface_sgmii(int dpmac_id)
 {
-	int lane, slot;
 	struct mii_dev *bus;
 	struct ccsr_gur __iomem *gur = (void *)CONFIG_SYS_FSL_GUTS_ADDR;
 	u32 serdes1_prtcl, cfg;
@@ -467,48 +485,32 @@ void ls1088a_handle_phy_interface_sgmii(int dpmac_id)
 	case 0x15:
 	case 0x1E:
 	case 0x3A:
-		lane = serdes_get_first_lane(FSL_SRDS_1, SGMII1 + dpmac_id - 1);
-		slot = lane_to_slot_fsm1[lane];
-
-		switch (slot) {
+		switch (dpmac_id) {
 		case 1:
-			/* Slot housing a SGMII riser card? */
-			switch(dpmac_id) {
-			case 1:
-				wriop_set_phy_address(dpmac_id,
-						      riser_phy_addr[1]);
-				break;
-			case 2:
-				wriop_set_phy_address(dpmac_id,
-						      riser_phy_addr[0]);
-				break;
-
-			case 3:
-				wriop_set_phy_address(dpmac_id,
-						      riser_phy_addr[3]);
-				break;
-			case 7:
-				wriop_set_phy_address(dpmac_id,
-						      riser_phy_addr[2]);
-				break;
-			}
-
-			dpmac_info[dpmac_id].board_mux = EMI1_SLOT1;
-			bus = mii_dev_for_muxval(EMI1_SLOT1);
-			wriop_set_mdio(dpmac_id, bus);
+			wriop_set_phy_address(dpmac_id, riser_phy_addr[1]);
 			break;
 		case 2:
-
+			wriop_set_phy_address(dpmac_id, riser_phy_addr[0]);
+			break;
+		case 3:
+			wriop_set_phy_address(dpmac_id, riser_phy_addr[3]);
+			break;
+		case 7:
+			wriop_set_phy_address(dpmac_id, riser_phy_addr[2]);
+			break;
+		default:
+			printf("WRIOP: Wrong DPMAC%d set to SGMII", dpmac_id);
 			break;
 		}
-	break;
+		break;
 	default:
 		printf("%s qds: WRIOP: Unsupported SerDes1 Protocol 0x%02x\n",
 		       __func__ , serdes1_prtcl);
-	break;
+		return;
 	}
-	if (hwconfig_f("xqsgmii", env_hwconfig))
-		sgmii_configure_repeater(dpmac_id);
+	dpmac_info[dpmac_id].board_mux = EMI1_SLOT1;
+	bus = mii_dev_for_muxval(EMI1_SLOT1);
+	wriop_set_mdio(dpmac_id, bus);
 }
 
 void ls1088a_handle_phy_interface_qsgmii(int dpmac_id)
@@ -665,6 +667,9 @@ int board_eth_init(bd_t *bis)
 			switch (wriop_get_enet_if(i)) {
 			case PHY_INTERFACE_MODE_QSGMII:
 				qsgmii_configure_repeater(i);
+				break;
+			case PHY_INTERFACE_MODE_SGMII:
+				sgmii_configure_repeater(i);
 				break;
 			default:
 				break;
