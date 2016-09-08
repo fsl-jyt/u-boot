@@ -53,8 +53,9 @@ struct cpu_type {
 #define SVR_LS2048		0x870920
 #define SVR_LS2044		0x870930
 #define SVR_LS1048		0x870320
-#define SVR_LS1084		0x870310
+#define SVR_LS1084		0x870302
 #define SVR_LS1088		0x870300
+#define SVR_LS1044		0x870322
 
 #define SVR_DEV_LS2080		0x8701
 
