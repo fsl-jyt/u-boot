@@ -945,7 +945,11 @@ u-boot.cfg:	include/config.h
 ifdef CONFIG_TPL
 SPL_PAYLOAD := tpl/u-boot-with-tpl.bin
 else
+ifdef CONFIG_OF_CONTROL
+SPL_PAYLOAD := u-boot-dtb.img
+else
 SPL_PAYLOAD := u-boot.img
+endif
 endif
 
 OBJCOPYFLAGS_u-boot-with-spl.bin = -I binary -O binary \
