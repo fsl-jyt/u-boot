@@ -236,6 +236,11 @@ unsigned long long get_qixis_addr(void);
 				" fsl_mc apply dpl 0x80200000 &&" \
 				" sf read $kernel_load $kernel_start" \
 				" $kernel_size && bootm $kernel_load"
+#elif defined(CONFIG_SD_BOOT)
+#define CONFIG_BOOTCOMMAND     "mmcinfo;mmc read 0x80200000 0x3800 0x800;"\
+                               " fsl_mc apply dpl 0x80200000 &&" \
+                               " mmc read $kernel_load $kernel_start" \
+                               " $kernel_size && bootm $kernel_load"
 #else
 #define CONFIG_BOOTCOMMAND	"fsl_mc apply dpl 0x580700000 &&" \
 				" cp.b $kernel_start $kernel_load" \
@@ -275,10 +280,8 @@ unsigned long long get_qixis_addr(void);
 
 #ifdef CONFIG_SD_BOOT
 #define CONFIG_SPL_MMC_SUPPORT
-#define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR               0x8B0
-#define CONFIG_SYS_U_BOOT_MAX_SIZE_SECTORS              0x400
-#define CONFIG_PARTITIONS				1
-#define CONFIG_SYS_MMCSD_FS_BOOT_PARTITION		1
+#define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR               0xC0
+#define CONFIG_SYS_U_BOOT_MAX_SIZE_SECTORS              0x600
 #endif
 
 #define CONFIG_SYS_SPL_MALLOC_SIZE     0x00100000

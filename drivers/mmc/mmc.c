@@ -1338,7 +1338,7 @@ static int mmc_startup(struct mmc *mmc)
 	if (err)
 		return err;
 
-#if !(defined(CONFIG_LS1088A) && defined(CONFIG_EMU) && defined(CONFIG_SD_BOOT))
+#if !(defined(CONFIG_LS1088A) && defined(CONFIG_SD_BOOT))
 	if (IS_SD(mmc))
 		err = sd_change_freq(mmc);
 	else
