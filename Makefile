@@ -946,11 +946,19 @@ ifdef CONFIG_TPL
 SPL_PAYLOAD := tpl/u-boot-with-tpl.bin
 else
 ifdef CONFIG_OF_CONTROL
+ifeq ($(ARCH),arm)
 SPL_PAYLOAD := u-boot-dtb.img
 else
+SPL_PAYLOAD := u-boot-dtb.bin
+endif	#ifeq ($(ARCH),arm)
+else
+ifeq ($(ARCH),arm)
 SPL_PAYLOAD := u-boot.img
-endif
-endif
+else
+SPL_PAYLOAD := u-boot.bin
+endif	#ifeq ($(ARCH),arm)
+endif	#ifdef CONFIG_OF_CONTROL
+endif	#ifdef CONFIG_TPL
 
 OBJCOPYFLAGS_u-boot-with-spl.bin = -I binary -O binary \
 				   --pad-to=$(CONFIG_SPL_PAD_TO)
