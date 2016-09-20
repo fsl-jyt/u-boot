@@ -64,22 +64,11 @@ found:
 		pbsp->clk_adjust, pbsp->wrlvl_start, pbsp->wrlvl_ctl_2,
 		pbsp->wrlvl_ctl_3);
 
-	popts->data_bus_width = 0;      /* 64b data bus */
-	popts->otf_burst_chop_en = 0;
-	popts->burst_length = DDR_BL8;
-	popts->bstopre = 0;		/* enable auto precharge */
-
 	popts->half_strength_driver_enable = 0;
-	/*
-	 * Write leveling override
-	 */
+
+	/* Write leveling override */
 	popts->wrlvl_override = 1;
 	popts->wrlvl_sample = 0xf;
-
-	/*
-	 * Rtt and Rtt_WR override
-	 */
-	popts->rtt_override = 0;
 
 	/* Enable ZQ calibration */
 	popts->zq_en = 1;
@@ -87,8 +76,8 @@ found:
 	/* Enable DDR hashing */
 	popts->addr_hash = 1;
 
-	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_80ohm);
-	popts->ddr_cdr2 = DDR_CDR2_ODT(DDR_CDR_ODT_80ohm) |
+	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_60ohm);
+	popts->ddr_cdr2 = DDR_CDR2_ODT(DDR_CDR_ODT_60ohm) |
 			  DDR_CDR2_VREF_TRAIN_EN | DDR_CDR2_VREF_RANGE_2;
 }
 
