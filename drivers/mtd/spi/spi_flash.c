@@ -1206,9 +1206,7 @@ int spi_flash_scan(struct spi_flash *flash)
 	u8 idcode[5];
 	u8 cmd;
 	int ret;
-#ifdef CONFIG_SPI_FLASH_SPANSION
 	u8 id[6];
-#endif
 
 	/* Read the ID codes */
 	ret = spi_flash_cmd(spi, CMD_READ_ID, idcode, sizeof(idcode));
