@@ -246,6 +246,7 @@
 #define CONFIG_SYS_FSL_SFP_BE
 #define CONFIG_SYS_FSL_SRK_LE
 #define CONFIG_KEY_REVOCATION
+#define CONFIG_SYS_FSL_MAX_NUM_OF_SEC		1
 
 #else
 #error SoC not defined
