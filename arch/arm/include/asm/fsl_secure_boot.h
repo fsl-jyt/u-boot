@@ -74,6 +74,14 @@
 #define CONFIG_BOOTSCRIPT_COPY_RAM
 #endif
 /* The address needs to be modified according to NOR and DDR memory map */
+#ifdef CONFIG_QSPI_BOOT
+#ifdef CONFIG_FSL_LSCH3
+#define CONFIG_BS_HDR_ADDR_FLASH        0x410c00000
+#define CONFIG_BS_ADDR_FLASH            0x410e00000
+#define CONFIG_BS_HDR_ADDR_RAM          0xa0c00000
+#define CONFIG_BS_ADDR_RAM              0xa0e00000
+#endif
+#else
 #ifdef CONFIG_FSL_LSCH3
 #define CONFIG_BS_HDR_ADDR_FLASH	0x583920000
 #define CONFIG_BS_ADDR_FLASH		0x583900000
@@ -85,6 +93,7 @@
 #define CONFIG_BS_HDR_ADDR_RAM		0xa0060000
 #define CONFIG_BS_ADDR_RAM		0xa0060000
 #endif
+#endif /* ifdef CONFIG_QSPI_BOOT */
 
 #ifdef CONFIG_BOOTSCRIPT_COPY_RAM
 #define CONFIG_BOOTSCRIPT_HDR_ADDR	CONFIG_BS_HDR_ADDR_RAM
