@@ -376,17 +376,19 @@ void fdt_fixup_board_enet(void *fdt)
 #ifdef CONFIG_OF_BOARD_SETUP
 int ft_board_setup(void *blob, bd_t *bd)
 {
-	int err;
+	int err, i;
 	u64 base[CONFIG_NR_DRAM_BANKS];
 	u64 size[CONFIG_NR_DRAM_BANKS];
 
 	ft_cpu_setup(blob, bd);
 
 	/* fixup DT for the two GPP DDR banks */
-	base[0] = gd->bd->bi_dram[0].start;
-	size[0] = gd->bd->bi_dram[0].size;
+	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
+		base[i] = gd->bd->bi_dram[i].start;
+		size[i] = gd->bd->bi_dram[i].size;
+	}
 
-	fdt_fixup_memory_banks(blob, base, size, 1);
+	fdt_fixup_memory_banks(blob, base, size, CONFIG_NR_DRAM_BANKS);
 
 #ifdef CONFIG_FSL_MC_ENET
 	fdt_fixup_board_enet(blob);
