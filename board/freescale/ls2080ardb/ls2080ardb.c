@@ -19,6 +19,7 @@
 #include <i2c.h>
 #include <asm/arch/soc.h>
 #include <fsl_sec.h>
+#include <asm/arch/ppa.h>
 
 #include "../common/qixis.h"
 #include "ls2080ardb_qixis.h"
