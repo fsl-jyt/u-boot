@@ -368,6 +368,7 @@ unsigned long get_board_ddr_clk(void);
 
 /* Initial environment variables */
 #if defined(CONFIG_QSPI_BOOT)
+#ifndef CONFIG_SECURE_BOOT
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS		\
 	"hwconfig=fsl_ddr:bank_intlv=auto\0"	\
@@ -384,6 +385,29 @@ unsigned long get_board_ddr_clk(void);
 	"sf read 0x80100000 0x800000 0x100000;" \
 	"fsl_mc start mc 0x80000000 0x80100000\0"	\
 	"mcmemsize=0x70000000 \0"
+#else
+#undef CONFIG_EXTRA_ENV_SETTINGS
+#define CONFIG_EXTRA_ENV_SETTINGS               \
+	"hwconfig=fsl_ddr:bank_intlv=auto\0"    \
+	"loadaddr=0x90100000\0"                 \
+	"kernel_addr=0x100000\0"                \
+	"ramdisk_addr=0x800000\0"               \
+	"ramdisk_size=0x2000000\0"              \
+	"fdt_high=0xa0000000\0"                 \
+	"initrd_high=0xffffffffffffffff\0"      \
+	"kernel_start=0x1100000\0"              \
+	"kernel_load=0xa0000000\0"              \
+	"kernel_size=0x2800000\0"               \
+	"mcinitcmd=sf probe 0:0; sf read 0xa0300000 0x300000 0x100000;"   \
+	"sf read 0xa0c80000 0xc80000 0x100000; esbc_validate 0xa0c80000;" \
+	"sf read 0xa0800000 0x800000 0x100000;" \
+	"sf read 0xa0cc0000 0xcc0000 0x100000;esbc_validate 0xa0cc0000;"  \
+	"fsl_mc start mc 0xa0300000 0xa0800000\0"       \
+	"mcmemsize=0x70000000 \0"
+#endif /* ifndef CONFIG_SECURE_BOOT */
+/* In CONFIG_SECURE_BOOT  mcinitcmd reads the MC, DPC headers and their
+ * corresponding images on to RAM and then validate the images.
+ */
 #elif defined(CONFIG_SD_BOOT)
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS               \
