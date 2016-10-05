@@ -188,6 +188,10 @@ int board_init(void)
 	out_le32(irq_ccsr + IRQCR_OFFSET / 4, AQR405_IRQ_MASK);
 #endif
 
+#ifdef CONFIG_FSL_CAAM
+	sec_init();
+#endif
+
 #ifdef CONFIG_FSL_LS_PPA
 	ppa_init_pre(&ppa_entry);
 
@@ -240,9 +244,6 @@ int arch_misc_init(void)
 {
 #ifdef CONFIG_FSL_DEBUG_SERVER
 	debug_server_init();
-#endif
-#ifdef CONFIG_FSL_CAAM
-	sec_init();
 #endif
 	return 0;
 }
