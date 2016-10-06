@@ -474,9 +474,7 @@ static int mmc_send_ext_csd(struct mmc *mmc, u8 *ext_csd)
 	data.blocksize = MMC_MAX_BLOCK_LEN;
 	data.flags = MMC_DATA_READ;
 
-#if !(defined(CONFIG_LS1088A) && defined(CONFIG_SD_BOOT))
 	err = mmc_send_cmd(mmc, &cmd, &data);
-#endif
 
 	return err;
 }
