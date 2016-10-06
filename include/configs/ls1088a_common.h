@@ -280,7 +280,7 @@ unsigned long long get_qixis_addr(void);
 
 #ifdef CONFIG_SD_BOOT
 #define CONFIG_SPL_MMC_SUPPORT
-#define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR               0xC0
+#define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR               0x8B0
 #define CONFIG_SYS_U_BOOT_MAX_SIZE_SECTORS              0x600
 #endif
 
