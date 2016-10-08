@@ -239,8 +239,7 @@ void fsl_ddr_set_memctl_regs(const fsl_ddr_cfg_regs_t *regs,
 #ifdef CONFIG_SYS_FSL_ERRATUM_A008511
 	/* Part 1 of 2 */
 	/* This erraum only applies to verion 5.2.0 */
-	if ((fsl_ddr_get_version(ctrl_num) == 0x50200)
-		|| (fsl_ddr_get_version(ctrl_num) == 0x50201)) {
+	if (fsl_ddr_get_version(ctrl_num) == 0x50200) {
 		/* Disable DRAM VRef training */
 		ddr_out32(&ddr->ddr_cdr2,
 			  regs->ddr_cdr2 & ~DDR_CDR2_VREF_TRAIN_EN);
@@ -333,8 +332,7 @@ step2:
 	defined(CONFIG_SYS_FSL_ERRATUM_A009803)
 	/* Part 2 of 2 */
 	/* This erraum only applies to verion 5.2.0 */
-	if ((fsl_ddr_get_version(ctrl_num) == 0x50200)
-		|| (fsl_ddr_get_version(ctrl_num) == 0x50201)) {
+	if (fsl_ddr_get_version(ctrl_num) == 0x50200) {
 		/* Wait for idle */
 		timeout = 40;
 		while (!(ddr_in32(&ddr->debug[1]) & 0x2) &&
