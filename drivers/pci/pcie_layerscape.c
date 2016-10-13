@@ -313,7 +313,7 @@ int pci_skip_dev(struct pci_controller *hose, pci_dev_t dev)
 
 static int ls_pcie_addr_valid(struct pci_controller *hose, pci_dev_t d)
 {
-	if (PCI_DEV(d) > 0)
+	if (PCI_BUS(d) <= (hose->first_busno + 1) && PCI_DEV(d) > 0)
 		return -EINVAL;
 
 	/* Controller does not support multi-function in RC mode */
@@ -328,6 +328,11 @@ static int ls_pcie_read_config(struct pci_controller *hose, pci_dev_t d,
 {
 	struct ls_pcie *pcie = hose->priv_data;
 	u32 busdev, *addr;
+	u32 bus, dev, func, atu_d;
+
+	bus = PCI_BUS(d); dev = PCI_DEV(d); func = PCI_FUNC(d);
+	bus = bus - hose->first_busno;
+	atu_d = PCI_BDF(bus, dev, func);
 
 	if (ls_pcie_addr_valid(hose, d)) {
 		*val = 0xffffffff;
@@ -337,9 +342,9 @@ static int ls_pcie_read_config(struct pci_controller *hose, pci_dev_t d,
 	if (PCI_BUS(d) == hose->first_busno) {
 		addr = pcie->dbi + (where & ~0x3);
 	} else {
-		busdev = PCIE_ATU_BUS(PCI_BUS(d)) |
-			 PCIE_ATU_DEV(PCI_DEV(d)) |
-			 PCIE_ATU_FUNC(PCI_FUNC(d));
+		busdev = PCIE_ATU_BUS(PCI_BUS(atu_d)) |
+			 PCIE_ATU_DEV(PCI_DEV(atu_d)) |
+			 PCIE_ATU_FUNC(PCI_FUNC(atu_d));
 
 		if (PCI_BUS(d) == hose->first_busno + 1) {
 			ls_pcie_cfg0_set_busdev(pcie, busdev);
@@ -360,6 +365,11 @@ static int ls_pcie_write_config(struct pci_controller *hose, pci_dev_t d,
 {
 	struct ls_pcie *pcie = hose->priv_data;
 	u32 busdev, *addr;
+	u32 bus, dev, func, atu_d;
+
+	bus = PCI_BUS(d); dev = PCI_DEV(d); func = PCI_FUNC(d);
+	bus = bus - hose->first_busno;
+	atu_d = PCI_BDF(bus, dev, func);
 
 	if (ls_pcie_addr_valid(hose, d))
 		return -EINVAL;
@@ -367,9 +377,9 @@ static int ls_pcie_write_config(struct pci_controller *hose, pci_dev_t d,
 	if (PCI_BUS(d) == hose->first_busno) {
 		addr = pcie->dbi + (where & ~0x3);
 	} else {
-		busdev = PCIE_ATU_BUS(PCI_BUS(d)) |
-			 PCIE_ATU_DEV(PCI_DEV(d)) |
-			 PCIE_ATU_FUNC(PCI_FUNC(d));
+		busdev = PCIE_ATU_BUS(PCI_BUS(atu_d)) |
+			 PCIE_ATU_DEV(PCI_DEV(atu_d)) |
+			 PCIE_ATU_FUNC(PCI_FUNC(atu_d));
 
 		if (PCI_BUS(d) == hose->first_busno + 1) {
 			ls_pcie_cfg0_set_busdev(pcie, busdev);
