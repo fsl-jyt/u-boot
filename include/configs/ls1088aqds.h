@@ -185,8 +185,8 @@ unsigned long get_board_ddr_clk(void);
 #define QIXIS_QMAP_SHIFT		5
 #define QIXIS_LBMAP_MASK		0x0f
 #define QIXIS_LBMAP_SHIFT		0
-#define QIXIS_LBMAP_DFLTBANK		0x00
-#define QIXIS_LBMAP_ALTBANK		0x04
+#define QIXIS_LBMAP_DFLTBANK		0x0e
+#define QIXIS_LBMAP_ALTBANK		0x2e
 #define QIXIS_LBMAP_SD			0x00
 #define QIXIS_LBMAP_SD_QSPI		0x0e
 #define QIXIS_LBMAP_QSPI		0x0e
