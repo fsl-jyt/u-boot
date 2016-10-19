@@ -188,6 +188,7 @@ void qbman_version(u32 *major, u32 *minor)
 	case SVR_LS2084:
 	case SVR_LS2048:
 	case SVR_LS2044:
+	case SVR_LS1044:
 	case SVR_LS1048:
 	case SVR_LS1084:
 	case SVR_LS1088:
