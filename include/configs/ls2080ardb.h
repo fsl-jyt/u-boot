@@ -69,6 +69,11 @@ unsigned long get_board_sys_clk(void);
 #endif
 #define CONFIG_FSL_DDR_BIST	/* enable built-in memory test */
 
+/* GPT */
+#define CONFIG_PARTITION_UUIDS
+#define CONFIG_EFI_PARTITION
+#define CONFIG_CMD_GPT
+
 /* SATA */
 #define CONFIG_LIBATA
 #define CONFIG_SCSI_AHCI

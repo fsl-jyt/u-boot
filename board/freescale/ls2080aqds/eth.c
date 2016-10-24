@@ -521,6 +521,8 @@ static void initialize_dpmac_to_slot(void)
 		break;
 
 	case 0x2A:
+	case 0x4B:
+	case 0x4C:
 		printf("qds: WRIOP: Supported SerDes1 Protocol 0x%02x\n",
 		       serdes1_prtcl);
 		break;
@@ -821,6 +823,8 @@ void ls2080a_handle_phy_interface_xsgmii(int i)
 
 	switch (serdes1_prtcl) {
 	case 0x2A:
+	case 0x4B:
+	case 0x4C:
 		/*
 		 * XFI does not need a PHY to work, but to avoid U-boot use
 		 * default PHY address which is zero to a MAC when it found
