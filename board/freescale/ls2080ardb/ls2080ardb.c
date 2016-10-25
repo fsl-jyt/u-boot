@@ -151,6 +151,36 @@ int config_board_mux(int ctrl_type)
 	return 0;
 }
 
+void set_fan_speed(void)
+{
+	int ret, i;
+	u8 value;
+
+	select_i2c_ch_pca9547(I2C_MUX_CH_FAN);
+	value = 0x80;
+	ret = i2c_write(CONFIG_SYS_I2C_FAN_ADDR, 0x0, 1, &value, 1);
+	if (ret) {
+		printf("Fan: Failed to set fan speed\n");
+		return;
+	}
+	value = 1;
+	ret = i2c_write(CONFIG_SYS_I2C_FAN_ADDR, 0x58, 1, &value, 1);
+	if (ret) {
+		printf("Fan: Failed to set fan speed\n");
+		return;
+	}
+
+	/* set PWM = ~50% DCyc for all rear PWM fans */
+	value = 0x20;
+	for (i = 0xb4; i < 0xb9; i++) {
+		ret = i2c_write(CONFIG_SYS_I2C_FAN_ADDR, i, 1, &value, 1);
+		if (ret) {
+			printf("Fan: Failed to set fan speed\n");
+			return;
+		}
+	}
+}
+
 int board_init(void)
 {
 	char *env_hwconfig;
@@ -179,6 +209,7 @@ int board_init(void)
 #ifdef CONFIG_ENV_IS_NOWHERE
 	gd->env_addr = (ulong)&default_environment[0];
 #endif
+	set_fan_speed();
 	select_i2c_ch_pca9547(I2C_MUX_CH_DEFAULT);
 
 	QIXIS_WRITE(rst_ctl, QIXIS_RST_CTL_RESET_EN);

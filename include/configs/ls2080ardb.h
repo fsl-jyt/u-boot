@@ -285,6 +285,7 @@ unsigned long get_board_sys_clk(void);
 
 /* I2C bus multiplexer */
 #define I2C_MUX_CH_DEFAULT      0x8
+#define	I2C_MUX_CH_FAN		0xd
 
 /* SPI */
 #ifdef CONFIG_FSL_DSPI
@@ -301,6 +302,11 @@ unsigned long get_board_sys_clk(void);
 #define CONFIG_RTC_DS3231               1
 #define CONFIG_SYS_I2C_RTC_ADDR         0x68
 #define CONFIG_CMD_DATE
+
+/*
+ * Winbond fan controller
+ */
+#define CONFIG_SYS_I2C_FAN_ADDR		0x2c
 
 /* EEPROM */
 #define CONFIG_ID_EEPROM
