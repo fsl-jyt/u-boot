@@ -113,6 +113,17 @@
 
 #define CONFIG_DISPLAY_CPUINFO
 
+#define WRTBOOT_EXT4RFS "pfe stop && sf probe 0:0 && setenv bootargs " \
+	"root=/dev/mtdblock5 rootfstype=ext4 noinitrd console=ttyS0,115200 " \
+	"earlycon=uart8250,mmio,0x21c0500 mtdparts=1550000.quadspi:1M(rcw)," \
+	"1M(u-boot),1M(u-boot-env),1M(dtb),5M(kernel),23M(ext4rfs),32M(user)" \
+	" && sf read $fdtaddr 0x300000 100000 && " \
+	"sf read $loadaddr 0x400000 500000 && bootm $loadaddr - $fdtaddr"
+
+#define WRTUPDATE_DEFAULT " sf probe 0:0 && tftp 0xa0000000 <tftp_folder>/" \
+	"lede-layerscape-64b-ls1012ardb-squashfs-firmware.bin && protect off all" \
+	" && sf erase 0 $filesize && sf write 0xa0000000 0 $filesize; reset"
+
 /* Initial environment variables */
 #define CONFIG_EXTRA_ENV_SETTINGS		\
 	"initrd_high=0xffffffff\0"		\
@@ -127,6 +138,10 @@
 	"kernel_start=0xa00000\0"		\
 	"kernel_load=0xa0000000\0"		\
 	"kernel_size=0x2800000\0"		\
+	"loadaddr=82000000\0"			\
+	"fdtaddr=8f000000\0"			\
+	"wrtboot_ext4rfs=" WRTBOOT_EXT4RFS "\0"	\
+	"wrtupdate=" WRTUPDATE_DEFAULT "\0"	\
 	"console=ttyAMA0,38400n8\0"
 
 #define CONFIG_BOOTARGS		"console=ttyS0,115200 root=/dev/ram0 " \
@@ -134,6 +149,11 @@
 #define CONFIG_BOOTCOMMAND		"pfe stop; sf probe 0:0; sf read $kernel_load "\
 					"$kernel_start $kernel_size && "\
 					"bootm $kernel_load"
+
+#undef CONFIG_BOOTDELAY
+#define CONFIG_BOOTDELAY		3
+#undef CONFIG_BOOTCOMMAND
+#define CONFIG_BOOTCOMMAND		"run wrtboot_ext4rfs"
 
 /* Monitor Command Prompt */
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
