@@ -836,7 +836,7 @@ dtbs dts/dt.dtb: checkdtc u-boot
 
 u-boot-dtb.bin: u-boot.bin dts/dt.dtb FORCE
 	$(call if_changed,cat)
-	tclsh byte_swap.tcl u-boot-dtb.bin u-boot-swap.bin 8
+	perl byte_swap.pl u-boot-dtb.bin u-boot-swap.bin 8
 
 %.imx: %.bin
 	$(Q)$(MAKE) $(build)=arch/arm/imx-common $@
