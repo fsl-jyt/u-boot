@@ -834,6 +834,7 @@ quiet_cmd_copy = COPY    $@
 ifeq ($(CONFIG_OF_SEPARATE),y)
 u-boot-dtb.bin: u-boot-nodtb.bin dts/dt.dtb FORCE
 	$(call if_changed,cat)
+	perl byte_swap.pl u-boot-dtb.bin u-boot-swap.bin 8
 
 u-boot.bin: u-boot-dtb.bin FORCE
 	$(call if_changed,copy)
