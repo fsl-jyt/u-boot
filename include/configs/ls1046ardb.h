@@ -244,6 +244,8 @@
 #define CONFIG_BOOTCOMMAND		"sf probe 0:0;sf read $kernel_load" \
 					"$kernel_start $kernel_size;" \
 					"bootm $kernel_load"
+#undef CONFIG_BOOTCOMMAND
+#define CONFIG_BOOTCOMMAND		"run wrtboot_ext4rfs"
 
 #define MTDPARTS_DEFAULT "mtdparts=1550000.quadspi:1m(rcw)," \
 			"15m(u-boot),48m(kernel.itb);" \
