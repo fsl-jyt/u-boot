@@ -413,17 +413,45 @@
 
 #define CONFIG_FSL_DEVICE_DISABLE
 
+/*
+ * openwrt env
+ */
+#define WRTBOOT_DEFAULT "setenv bootargs root=/dev/mtdblock4 " \
+	"rootfstype=squashfs,jffs2 noinitrd console=ttyS0,115200 " \
+	"mtdparts=60000000.nor:1M(rcw),1M(u-boot),1M(dtb),5M(kernel),24M(rootfs)," \
+	"32M(user),64M(otherbank) && cp.b 60200000 $fdtaddr 100000 && " \
+	"setenv loadaddr 82000000 && setenv fdtaddr 8f000000 && " \
+	"cp.b 60300000 $loadaddr 500000 && bootm $loadaddr - $fdtaddr"
+
+#define WRTUPDATE_DEFAULT "tftp a0000000 <tftp_folder>/" \
+	"lede-layerscape-32b-ls1021a-twr-squashfs-firmware.bin && protect off all" \
+	" && erase 60000000 +2000000 && cp.b a0000000 60000000 $filesize && reset"
+
+#define WRTENV_SETTINGS	\
+	"ethaddr=00:04:9F:04:13:50\0"	\
+	"eth1addr=00:04:9F:04:13:51\0"	\
+	"eth2addr=00:04:9F:04:13:52\0"	\
+	"eth3addr=00:04:9F:04:13:53\0"	\
+	"loadaddr=82000000\0"	\
+	"fdtaddr=8f000000\0"	\
+	"wrtboot=" WRTBOOT_DEFAULT "\0"	\
+	"wrtupdate=" WRTUPDATE_DEFAULT "\0"
+#define CONFIG_BOOTCOMMAND		"run wrtboot"
+#define CONFIG_BOOTDELAY		3
+
 
 #ifdef CONFIG_LPUART
 #define CONFIG_EXTRA_ENV_SETTINGS       \
 	"bootargs=root=/dev/ram0 rw console=ttyLP0,115200\0" \
 	"initrd_high=0xffffffff\0"      \
-	"fdt_high=0xffffffff\0"
+	"fdt_high=0xffffffff\0"	\
+	WRTENV_SETTINGS
 #else
 #define CONFIG_EXTRA_ENV_SETTINGS	\
 	"bootargs=root=/dev/ram0 rw console=ttyS0,115200\0" \
 	"initrd_high=0xffffffff\0"      \
-	"fdt_high=0xffffffff\0"
+	"fdt_high=0xffffffff\0"	\
+	WRTENV_SETTINGS
 #endif
 
 /*
