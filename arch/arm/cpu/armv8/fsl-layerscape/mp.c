@@ -9,8 +9,45 @@
 #include <asm/system.h>
 #include <asm/arch/mp.h>
 #include <asm/arch/soc.h>
-#include "cpu.h"
+/*#include "cpu.h"*/
 #include <asm/arch-fsl-layerscape/soc.h>
+
+inline u32 initiator_type2(u32 cluster, int init_id)
+{
+	struct ccsr_gur *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+	u32 idx = (cluster >> (init_id * 8)) & TP_CLUSTER_INIT_MASK;
+	u32 type = 0;
+
+	type = gur_in32(&gur->tp_ityp[idx]);
+	if (type & TP_ITYP_AV)
+		return type;
+
+	return 0;
+}
+
+u32 cpu_mask2(void)
+{
+	struct ccsr_gur __iomem *gur = (void *)(CONFIG_SYS_FSL_GUTS_ADDR);
+	int i = 0, count = 0;
+	u32 cluster, type, mask = 0;
+
+	do {
+		int j;
+
+		cluster = gur_in32(&gur->tp_cluster[i].lower);
+		for (j = 0; j < TP_INIT_PER_CLUSTER; j++) {
+			type = initiator_type2(cluster, j);
+			if (type) {
+				if (TP_ITYP_TYPE(type) == TP_ITYP_TYPE_ARM)
+					mask |= 1 << count;
+				count++;
+			}
+		}
+		i++;
+	} while ((cluster & TP_CLUSTER_EOC) == 0x0);
+
+	return mask;
+}
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -62,7 +99,7 @@ int fsl_layerscape_wake_seconday_cores(void)
 			   (unsigned long)&__real_cntfrq + 8);
 #endif
 
-	cores = cpu_mask();
+	cores = cpu_mask2();
 	/* Clear spin table so that secondary processors
 	 * observe the correct value after waking up from wfe.
 	 */
@@ -92,7 +129,7 @@ int fsl_layerscape_wake_seconday_cores(void)
 		i = 0;
 		cluster = in_le32(&gur->tp_cluster[i].lower);
 		for (j = 0; j < TP_INIT_PER_CLUSTER; j++) {
-			type = initiator_type(cluster, j);
+			type = initiator_type2(cluster, j);
 			if (type &&
 			    TP_ITYP_TYPE(type) == TP_ITYP_TYPE_ARM)
 				cluster_cores++;
@@ -101,7 +138,7 @@ int fsl_layerscape_wake_seconday_cores(void)
 		do {
 			cluster = in_le32(&gur->tp_cluster[i].lower);
 			for (j = 0; j < TP_INIT_PER_CLUSTER; j++) {
-				type = initiator_type(cluster, j);
+				type = initiator_type2(cluster, j);
 				if (type &&
 				    TP_ITYP_TYPE(type) == TP_ITYP_TYPE_ARM)
 					wake_secondary_core_n(i, j,
@@ -152,7 +189,7 @@ int fsl_layerscape_wake_seconday_cores(void)
 
 int is_core_valid(unsigned int core)
 {
-	return !!((1 << core) & cpu_mask());
+	return !!((1 << core) & cpu_mask2());
 }
 
 int is_core_online(u64 cpu_id)
@@ -179,7 +216,7 @@ int cpu_disable(int nr)
 
 int core_to_pos(int nr)
 {
-	u32 cores = cpu_mask();
+	u32 cores = cpu_mask2();
 	int i, count = 0;
 
 	if (nr == 0) {
