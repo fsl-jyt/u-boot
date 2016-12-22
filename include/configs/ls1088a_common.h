@@ -213,6 +213,33 @@ unsigned long long get_qixis_addr(void);
 /* Allow to overwrite serial and ethaddr */
 #define CONFIG_ENV_OVERWRITE
 
+/* OpenWrt/LEDE env */
+#define WRTBOOT_QSPI_EXT4RFS "sf probe 0:0 && setenv bootargs root=/dev/mtdblock8 " \
+	"rootfstype=ext4 noinitrd console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 " \
+	"mtdparts=20c0000.quadspi:1M(rcw),1M(u-boot),1M(u-boot-env),4M(mc),1M(dpl),1M(dpc)," \
+	"1M(dtb),5M(kernel),17M(ext4rfs),32M(user) && sf read $fdtaddr 0x900000 100000 && " \
+	"sf read $loadaddr 0xa00000 500000 && bootm $loadaddr - $fdtaddr"
+
+#define WRTBOOT_MMCP1_EXT4RFS "sf probe 0:0 && setenv bootargs root=/dev/mmcblk0p1 " \
+	"rw rootdelay=3 noinitrd console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 " \
+	"mtdparts=20c0000.quadspi:1M(rcw),1M(u-boot),1M(u-boot-env),4M(mc),1M(dpl),1M(dpc)," \
+	"1M(dtb),5M(kernel),17M(ext4rfs),32M(user) && sf read $fdtaddr 0x900000 100000 && " \
+	"sf read $loadaddr 0xa00000 500000 && bootm $loadaddr - $fdtaddr"
+
+#define WRTBOOT_SDA1_EXT4RFS "sf probe 0:0 && setenv bootargs root=/dev/sda1 " \
+	"rw rootdelay=3 noinitrd console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 " \
+	"mtdparts=20c0000.quadspi:1M(rcw),1M(u-boot),1M(u-boot-env),4M(mc),1M(dpl),1M(dpc)," \
+	"1M(dtb),5M(kernel),17M(ext4rfs),32M(user) && sf read $fdtaddr 0x900000 100000 && " \
+	"sf read $loadaddr 0xa00000 500000 && bootm $loadaddr - $fdtaddr"
+
+#define WRTUPDATE_DEFAULT " sf probe 0:0 && tftp 0xa0000000 <tftp_folder>/" \
+	"lede-layerscape-64b-ls1088ardb-squashfs-firmware.bin && sf erase 0 $filesize" \
+	" && sf write 0xa0000000 0 $filesize; reset"
+
+#define MC_INIT "sf probe 0:0 && sf read 0x80000000 300000 100000 && " \
+	"sf read 0x90000000 800000 0x100000 && fsl_mc start mc 0x80000000 0x90000000 && " \
+	"sf read 0x80000000 0x700000 0x100000 && fsl_mc apply dpl 0x80000000"
+
 /* Initial environment variables */
 #define CONFIG_EXTRA_ENV_SETTINGS		\
 	"hwconfig=fsl_ddr:bank_intlv=auto\0"	\
@@ -247,7 +274,10 @@ unsigned long long get_qixis_addr(void);
 				" $kernel_size && bootm $kernel_load"
 #endif
 
-#define CONFIG_BOOTDELAY	10
+#define CONFIG_BOOTDELAY	3
+#undef CONFIG_BOOTCOMMAND
+#define CONFIG_BOOTCOMMAND		"run wrtboot_mc_init; run wrtboot_qspi_ext4rfs"
+
 /* Monitor Command Prompt */
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
 #define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE + \

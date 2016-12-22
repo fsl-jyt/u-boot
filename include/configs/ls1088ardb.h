@@ -341,7 +341,13 @@
 	"mcinitcmd=sf probe 0:0;sf read 0x80000000 0x300000 0x100000;"	\
 	"sf read 0x80100000 0x800000 0x100000;" \
 	"fsl_mc start mc 0x80000000 0x80100000\0"	\
-	"mcmemsize=0x70000000 \0"
+	"mcmemsize=0x70000000 \0"	\
+	"fdtaddr=8f000000\0"			\
+	"wrtboot_mc_init=" MC_INIT "\0"	\
+	"wrtboot_qspi_ext4rfs=" WRTBOOT_QSPI_EXT4RFS "\0"	\
+	"wrtboot_mmcp1_ext4rfs=" WRTBOOT_MMCP1_EXT4RFS "\0"	\
+	"wrtboot_sda1_ext4rfs=" WRTBOOT_SDA1_EXT4RFS "\0"	\
+	"wrtupdate=" WRTUPDATE_DEFAULT "\0"
 #else
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS               \
