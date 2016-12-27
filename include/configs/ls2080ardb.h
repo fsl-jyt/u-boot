@@ -354,6 +354,18 @@ unsigned long get_board_sys_clk(void);
 #define CONFIG_USB_STORAGE
 #define CONFIG_CMD_EXT2
 
+/* OpenWrt/LEDE env */
+#define WRTBOOT_NOR_RFS "fsl_mc start mc 0x580300000 0x580800000 && " \
+	"fsl_mc apply dpl 0x580700000 && setenv bootargs root=/dev/mtdblock8 " \
+	"rootfstype=squashfs,jffs2 noinitrd console=ttyS1,115200 earlycon=uart8250,mmio,0x21c0600 " \
+	"mtdparts=580000000.nor:1M(rcw),1M(u-boot),1M(u-boot-env),4M(mc),1M(dpl),1M(dpc)," \
+	"1M(dtb),5M(kernel),17M(rootfs),32M(user),64M(otherbank) && " \
+	"cp.b 0x580900000 $addr_fdt 100000 && cp.b 0x580a00000 $addr_kernel 500000 && " \
+	"bootm $addr_kernel - $addr_fdt"
+#define WRTUPDATE_DEFAULT " protect off all && tftp 0xa0000000 <tftp_folder>/" \
+	"lede-layerscape-64b-ls2088ardb-squashfs-firmware.bin && " \
+	"erase 580000000 +2000000 && cp.b a0000000 580000000 $filesize ; reset"
+
 /* Initial environment variables */
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #ifndef CONFIG_SECURE_BOOT
@@ -369,6 +381,10 @@ unsigned long get_board_sys_clk(void);
 	"kernel_load=0xa0000000\0"		\
 	"kernel_size=0x2800000\0"		\
 	"mcmemsize=0x40000000\0"		\
+	"addr_kernel=82000000\0"		\
+	"addr_fdt=8f000000\0"			\
+	"wrtboot_nor_rfs=" WRTBOOT_NOR_RFS "\0"	\
+	"wrtupdate=" WRTUPDATE_DEFAULT "\0"	\
 	"mcinitcmd=fsl_mc start mc 0x580300000"	\
 	" 0x580800000 \0"
 #else
@@ -389,6 +405,11 @@ unsigned long get_board_sys_clk(void);
 	"fsl_mc start mc 0x580300000"		\
 	" 0x580800000 \0"
 #endif
+
+#undef CONFIG_BOOTDELAY
+#define CONFIG_BOOTDELAY	3
+#undef CONFIG_BOOTCOMMAND
+#define CONFIG_BOOTCOMMAND		"run wrtboot_nor_rfs"
 
 #undef CONFIG_BOOTARGS
 #define CONFIG_BOOTARGS		"console=ttyS1,115200 root=/dev/ram0 " \
